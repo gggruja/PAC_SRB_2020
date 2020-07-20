@@ -1,2 +1,7 @@
 .idea/
 *.iml
+infrastructure/terraform/terraform.tfstate
+infrastructure/terraform/terraform.tfstate.backup
+infrastructure/terraform/.terraform/plugins/darwin_amd64/lock.json
+infrastructure/terraform/.terraform/plugins/darwin_amd64/terraform-provider-helm_v1.2.3_x4
+infrastructure/terraform/.terraform/plugins/darwin_amd64/terraform-provider-kubernetes_v1.11.3_x4
