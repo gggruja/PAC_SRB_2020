@@ -36,6 +36,10 @@ resource "helm_release" "keycloak-mariadb" {
   repository = local.helm_repository_bitnami
   namespace = kubernetes_namespace.keycloak.metadata[0].name
 
+  depends_on = [
+    helm_release.prometheus-operator
+  ]
+
   values = [
     file("helm/keycloak-database.yaml")
   ]
@@ -76,6 +80,7 @@ resource "kubernetes_secret" "keycloak-user" {
 }
 
 resource "helm_release" "keycloak" {
+
   depends_on = [
     helm_release.keycloak-mariadb
   ]
