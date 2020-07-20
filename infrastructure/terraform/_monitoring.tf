@@ -15,4 +15,4 @@ resource "helm_release" "prometheus-operator" {
   ]
 }
 
-}
+
