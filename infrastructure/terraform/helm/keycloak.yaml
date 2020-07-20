@@ -1,0 +1,15 @@
+keycloak:
+  existingSecret: keycloak-user
+  existingSecretKey: password
+  persistence:
+    dbVendor: mariadb
+    dbPort: 3306
+    existingSecret: keycloak-mariadb-access
+    existingSecretUsernameKey: username
+    existingSecretPasswordKey: password
+  ingress:
+    enabled: true
+    path: /
+    servicePort: http
+    hosts:
+      - conference.keycloak
