@@ -11,3 +11,7 @@ prometheus:
       - conference.prometheus
     paths:
       - /
+    annotations:
+      nginx.ingress.kubernetes.io/auth-type: basic
+      nginx.ingress.kubernetes.io/auth-secret: prometheus-basic-auth
+      nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required - Prometheus'
