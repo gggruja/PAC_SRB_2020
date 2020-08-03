@@ -8,6 +8,7 @@ import (
 
 type Config struct {
 	BindAddress string
+	BindDatabase string
 }
 
 func LoadConfig() (*Config, error) {
@@ -19,6 +20,7 @@ func LoadConfig() (*Config, error) {
 
 	return &Config{
 		BindAddress: os.Getenv("BIND_ADDRESS"),
+		BindDatabase: os.Getenv("BIND_DATABASE"),
 	}, nil
 }
 

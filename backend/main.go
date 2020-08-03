@@ -4,17 +4,17 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"fmt"
+	"github.com/gggruja/PAC_SRB_2020/backend/config"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 	"github.com/hashicorp/go-hclog"
-	"github.com/gggruja/PAC_SRB_2020/backend/config"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
 	"time"
-	"fmt"
-	_ "github.com/go-sql-driver/mysql"
 )
 
 var db *sql.DB
@@ -42,7 +42,7 @@ func main() {
 
 	fmt.Println("Go with MariaDB")
 
-	db, err = sql.Open("mysql", "keycloak:kcdgXeyiHwC1bJcb@tcp(127.0.0.1:3306)/keycloak")
+	db, err = sql.Open("mysql", cnf.BindDatabase)
 
 	if err != nil {
 		panic(err.Error())
@@ -55,6 +55,7 @@ func main() {
 	sm.HandleFunc("/", healthChecking)
 	sm.Handle("/metrics", promhttp.Handler())
 	sm.HandleFunc("/locations", GetLocations).Methods("GET")
+	sm.HandleFunc("/location", PostLocations).Methods("POST")
 
 	// create Server
 	s := http.Server{
@@ -99,7 +100,7 @@ func GetLocations(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 
-	var webs []Location
+	var locations []Location
 
 	result, err := db.Query("select Location_id,Location_name from Location")
 
@@ -110,19 +111,39 @@ func GetLocations(w http.ResponseWriter, r *http.Request) {
 	defer result.Close()
 
 	for result.Next() {
-		var website Location
-		err := result.Scan(&website.Location_id, &website.Location_name)
+		var location Location
+		err := result.Scan(&location.Location_id, &location.Location_name)
 
 		if err != nil {
 			panic(err.Error())
 		}
 
-		webs = append(webs, website)
+		locations = append(locations, location)
 
 	}
 
-	json.NewEncoder(w).Encode(webs)
+	json.NewEncoder(w).Encode(locations)
 
 }
 
+func PostLocations(w http.ResponseWriter, r *http.Request) {
 
+	w.Header().Set("Content-Type", "application/json")
+
+	var location Location
+
+	_ = json.NewDecoder(r.Body).Decode(&location)
+
+	stmt, es := db.Prepare("insert into Location values(?,?)")
+	if es != nil {
+		panic(es.Error())
+	}
+
+	_, er := stmt.Exec(location.Location_id, location.Location_name)
+	if er != nil {
+		panic(er.Error())
+	}
+
+	json.NewEncoder(w).Encode(location)
+
+}
