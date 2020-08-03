@@ -1,0 +1,9 @@
+image:
+  tag: "latest"
+  pullPolicy: IfNotPresent
+ingress:
+  enabled: true
+  hosts:
+    - host: conference.backend
+      paths:
+        - "/"
