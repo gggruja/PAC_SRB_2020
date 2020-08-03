@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/sqlite"
 )
 
 type Location struct {
@@ -13,7 +12,7 @@ type Location struct {
 	Location_name string `json:"location_name"`
 }
 
-func getLocations(w http.ResponseWriter, r *http.Request) {
+func GetLocations(w http.ResponseWriter, r *http.Request) {
 	db, err := gorm.Open("sqlite3", "test.db")
 	if err != nil {
 		panic("failed to connect database")
