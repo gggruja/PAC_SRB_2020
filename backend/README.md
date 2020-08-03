@@ -6,17 +6,29 @@ docker build . -t backend-go
 
 # Available REST API's:
 
+## EVENTS
+
+### POJO
+
+```
+type Event struct {
+	gorm.Model
+	EventName string  `json:"event_name"`
+	StartDate time.Time `json:"StartDate"`
+	EndDate time.Time `json:"EndtDate"`
+	LocationId uint   `json:"-"`
+}
+```
+
 ## LOCATIONS
 
 ### POJO
 
 ```
-{
-    "ID": 7,
-    "CreatedAt": "2020-08-03T18:08:05.304925+02:00",
-    "UpdatedAt": "2020-08-03T18:08:05.304925+02:00",
-    "DeletedAt": null,
-    "location_name": "Smederevo"
+type Location struct {
+	gorm.Model
+	LocationName string `json:"location_name"`
+	Events []Event    `json:"events" gorm:"foreignkey:LocationId"`
 }
 ```
 
