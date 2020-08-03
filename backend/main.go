@@ -13,8 +13,8 @@ import (
 	"time"
 )
 
-func testHandler(rw http.ResponseWriter, r *http.Request) {
-	log.Println("Handler called!")
+func healthChecking(rw http.ResponseWriter, r *http.Request) {
+	log.Println("Healthy App - Running!")
 }
 
 func main() {
@@ -31,7 +31,7 @@ func main() {
 
 	sm := mux.NewRouter()
 
-	sm.HandleFunc("/", testHandler)
+	sm.HandleFunc("/", healthChecking)
 	sm.Handle("/metrics", promhttp.Handler())
 
 	// create Server
