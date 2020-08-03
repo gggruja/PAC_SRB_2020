@@ -52,7 +52,7 @@ func main() {
 	defer db.Close()
 
 	// Migrate the schema
-	db.AutoMigrate(&Location{})
+	db.AutoMigrate(&Location{}, &Event{})
 
 	sm := mux.NewRouter()
 
@@ -65,6 +65,8 @@ func main() {
 	sm.HandleFunc("/locations/{locationId}", getLocation).Methods("GET")
 	sm.HandleFunc("/locations/{locationId}", updateLocation).Methods("PUT")
 	sm.HandleFunc("/locations/{locationId}", deleteLocation).Methods("DELETE")
+	sm.HandleFunc("/events", getAllEvents).Methods("GET")
+	sm.HandleFunc("/events/{eventId}", getOneEvent).Methods("GET")
 
 	// create Server
 	s := http.Server{
@@ -100,9 +102,11 @@ func main() {
 	s.Shutdown(ctx)
 }
 
+
 type Location struct {
 	gorm.Model
 	LocationName string `json:"location_name"`
+	Events []Event    `json:"events" gorm:"foreignkey:LocationId"`
 }
 
 func deleteLocation(w http.ResponseWriter, r *http.Request) {
@@ -136,7 +140,7 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 	inputLocationId := params["locationId"]
 
 	var location Location
-	db.First(&location, inputLocationId)
+	db.Preload("Events").First(&location, inputLocationId)
 	json.NewEncoder(w).Encode(location)
 
 }
@@ -146,7 +150,7 @@ func getLocations(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	var locations []Location
-	db.Find(&locations)
+	db.Preload("Events").Find(&locations)
 	json.NewEncoder(w).Encode(locations)
 
 }
@@ -159,5 +163,36 @@ func createLocations(w http.ResponseWriter, r *http.Request) {
 	db.Create(&location)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(location)
+
+}
+
+type Event struct {
+	gorm.Model
+	EventName string  `json:"event_name"`
+	StartDate time.Time `json:"StartDate"`
+	EndDate time.Time `json:"EndtDate"`
+	LocationId uint   `json:"-"`
+}
+
+
+
+func getAllEvents(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+	var events []Event
+	db.Find(&events)
+	json.NewEncoder(w).Encode(events)
+
+}
+
+func getOneEvent(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
+	inputEventId := params["eventId"]
+
+	var event Event
+	db.First(&event, inputEventId)
+	json.NewEncoder(w).Encode(event)
 
 }
