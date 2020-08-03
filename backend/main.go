@@ -15,6 +15,11 @@ import (
 
 func healthChecking(rw http.ResponseWriter, r *http.Request) {
 	log.Println("Healthy App - Running!")
+	log.Println("Backend App is up and running - Goran Grujic")
+
+	rw.Header().Set("Content-Type", "text/plain")
+	rw.WriteHeader(http.StatusOK)
+	rw.Write([]byte("Backend App - Goran Grujic!"))
 }
 
 func main() {
