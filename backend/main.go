@@ -29,10 +29,6 @@ func healthChecking(rw http.ResponseWriter, r *http.Request) {
 	rw.Write([]byte("Backend App - Goran Grujic!"))
 }
 
-// initialize DB
-func initDB() {
-}
-
 func main() {
 
 	// log instance
@@ -69,9 +65,6 @@ func main() {
 	sm.HandleFunc("/locations/{locationId}", getLocation).Methods("GET")
 	sm.HandleFunc("/locations/{locationId}", updateLocation).Methods("PUT")
 	sm.HandleFunc("/locations/{locationId}", deleteLocation).Methods("DELETE")
-
-	// Initialize db connection
-	initDB()
 
 	// create Server
 	s := http.Server{
