@@ -51,8 +51,7 @@ func main() {
 
 	defer db.Close()
 
-	// Migrate the schema
-	db.AutoMigrate(&Location{}, &Event{})
+	DbInit()
 
 	sm := mux.NewRouter()
 
@@ -102,11 +101,131 @@ func main() {
 	s.Shutdown(ctx)
 }
 
+func DbInit() {
+
+	// Drop
+	db.DropTableIfExists(&Location{}, &Event{}, &Organization{}, &Person{}, &Room{},
+		&Language{}, &Talk{}, &Topic{}, &Child{}, &Parent{})
+
+	// Create new one
+	db.AutoMigrate(&Location{}, &Event{}, &Organization{}, &Person{}, &Room{},
+		&Language{}, &Talk{}, &Topic{}, &Child{}, &Parent{})
+
+
+	// Create records
+	db.Create(&Location{LocationName: "Beograd"})
+	db.Create(&Location{LocationName: "Smederevo"})
+
+	db.Create(&Event{EventName: "Heapcon Belgrade", StartDate: time.Now(), EndDate: time.Now(), LocationId: 1})
+
+	db.Create(&Organization{OrganizationName: "PRODYNA"})
+
+	db.Create(&Person{PersonName: "Goran Grujic", OrganizationId: 1, TalkId: 1})
+
+	db.Create(&Room{RoomName: "Hawaii", OrganizationId: 1})
+
+	db.Create(&Language{LanguageName: "Serbian"})
+	db.Create(&Language{LanguageName: "English"})
+	db.Create(&Language{LanguageName: "German"})
+
+	db.Create(&Talk{TitleName: "CKAD - Kubernetes Development", StartDate: time.Now(), EndDate: time.Now(), LanguageId: 1, Level: "Beginner"})
+	db.Create(&Talk{TitleName: "Weed - Rolling papers", StartDate: time.Now(), EndDate: time.Now(), LanguageId: 1, Level: "Architect"})
+
+	var childs = []Child {
+		Child {
+			TopicName: "Kubernetes Child 1",
+		},
+		Child {
+			TopicName: "Kubernetes Child 2",
+		},
+	}
+
+	var parents = []Parent {
+		Parent {
+			TopicName: "Kubernetes Parent 1",
+		},
+		Parent {
+			TopicName: "Kubernetes Parent 2",
+		},
+	}
+
+	db.Create(&Topic{TopicName: "Kubernetes", TalkId: 1, Childs:childs, Parents:parents})
+	db.Create(&Topic{TopicName: "Exam", TalkId: 1})
+	db.Create(&Topic{TopicName: "Rolling Pappers", TalkId: 2})
+	db.Create(&Topic{TopicName: "Weed", TalkId: 2})
+
+
+
+
+}
 
 type Location struct {
 	gorm.Model
-	LocationName string `json:"location_name"`
-	Events []Event    `json:"events" gorm:"foreignkey:LocationId"`
+	LocationName string  `json:"location_name"`
+	Events       []Event `json:"events" gorm:"foreignkey:LocationId"`
+}
+
+type Event struct {
+	gorm.Model
+	EventName  string    `json:"event_name"`
+	StartDate  time.Time `json:"StartDate"`
+	EndDate    time.Time `json:"EndtDate"`
+	LocationId uint      `json:"-"`
+}
+
+type Organization struct {
+	gorm.Model
+	OrganizationName string   `json:"Organization_name"`
+	Persons          []Person `json:"persons" gorm:"foreignkey:OrganizationId"`
+	Rooms            []Room   `json:"rooms" gorm:"foreignkey:OrganizationId"`
+}
+
+type Person struct {
+	gorm.Model
+	PersonName     string `json:"person_name"`
+	OrganizationId uint   `json:"-"`
+	TalkId         uint   `json:"-"`
+}
+
+type Room struct {
+	gorm.Model
+	RoomName       string `json:"room_name"`
+	OrganizationId uint   `json:"-"`
+}
+
+type Language struct {
+	gorm.Model
+	LanguageName string `json:"room_name"`
+	Talks        []Talk `json:"talks" gorm:"foreignkey:LanguageId"`
+}
+
+type Talk struct {
+	gorm.Model
+	TitleName  string    `json:"title_name"`
+	StartDate  time.Time `json:"StartDate"`
+	EndDate    time.Time `json:"EndtDate"`
+	LanguageId uint      `json:"-"`
+	Persons    []Person  `json:"persons" gorm:"foreignkey:TalkId"`
+	Level      string    `json:"level"`
+	Topics     []Topic   `json:"topics" gorm:"foreignkey:TalkId"`
+}
+
+type Topic struct {
+	gorm.Model
+	TopicName string   `json:"topic_name"`
+	TalkId    uint     `json:"-"`
+	Childs    []Child  `gorm:"many2many:topic_childs;"`
+	Parents   []Parent `gorm:"many2many:topic_parents;"`
+}
+
+type Child struct {
+	gorm.Model
+	TopicName string `json:"topic_name"`
+}
+
+type Parent struct {
+	gorm.Model
+	TopicName string `json:"topic_name"`
 }
 
 func deleteLocation(w http.ResponseWriter, r *http.Request) {
@@ -165,16 +284,6 @@ func createLocations(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(location)
 
 }
-
-type Event struct {
-	gorm.Model
-	EventName string  `json:"event_name"`
-	StartDate time.Time `json:"StartDate"`
-	EndDate time.Time `json:"EndtDate"`
-	LocationId uint   `json:"-"`
-}
-
-
 
 func getAllEvents(w http.ResponseWriter, r *http.Request) {
 
