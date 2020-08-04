@@ -41,6 +41,7 @@ sm.HandleFunc("/locations/{locationId}", getLocation).Methods("GET") | http://lo
 sm.HandleFunc("/locations/{locationId}", updateLocation).Methods("PUT") | http://localhost:9090/locations/1 | PUT |  | 
 sm.HandleFunc("/locations/{locationId}", deleteLocation).Methods("DELETE") | http://localhost:9090/locations/1 | DELETE |  | 
 sm.HandleFunc("/persons", getPersons).Methods("GET") | http://localhost:9090/persons | GET |  | 
+sm.HandleFunc("/talks/person/{personId}", getTalks).Methods("GET") | http://localhost:9090//talks/person/1 | GET |  | 
 
 #### GET ALL locations and there event
 ```
@@ -119,5 +120,32 @@ sm.HandleFunc("/persons", getPersons).Methods("GET") | http://localhost:9090/per
         "talkId": 1
     }
 ]
-```
 
+```
+#### GET TOPICS PER PERSON
+```
+[
+    {
+        "ID": 1,
+        "CreatedAt": "2020-08-04T12:33:49Z",
+        "UpdatedAt": "2020-08-04T12:33:49Z",
+        "DeletedAt": null,
+        "title_name": "CKAD - Kubernetes Development",
+        "StartDate": "2020-08-04T12:33:49Z",
+        "EndtDate": "2020-08-04T12:33:49Z",
+        "persons": [
+            {
+                "ID": 1,
+                "CreatedAt": "2020-08-04T12:33:49Z",
+                "UpdatedAt": "2020-08-04T12:33:49Z",
+                "DeletedAt": null,
+                "person_name": "Goran Grujic",
+                "organizationId": 1,
+                "talkId": 1
+            }
+        ],
+        "level": "Beginner",
+        "topics": null
+    }
+]
+```
