@@ -113,12 +113,12 @@ sm.HandleFunc("/topics", getTopics).Methods("GET") | http://localhost:9090//topi
 [
     {
         "ID": 1,
-        "CreatedAt": "2020-08-04T12:13:44Z",
-        "UpdatedAt": "2020-08-04T12:13:44Z",
+        "CreatedAt": "2020-08-04T14:13:13Z",
+        "UpdatedAt": "2020-08-04T14:13:13Z",
         "DeletedAt": null,
-        "person_name": "Goran Grujic",
-        "organizationId": 1,
-        "talkId": 1
+        "PersonName": "Goran Grujic",
+        "OrganizationId": 1,
+        "TalkId": 1
     }
 ]
 
@@ -128,25 +128,26 @@ sm.HandleFunc("/topics", getTopics).Methods("GET") | http://localhost:9090//topi
 [
     {
         "ID": 1,
-        "CreatedAt": "2020-08-04T12:33:49Z",
-        "UpdatedAt": "2020-08-04T12:33:49Z",
+        "CreatedAt": "2020-08-04T14:13:14Z",
+        "UpdatedAt": "2020-08-04T14:13:14Z",
         "DeletedAt": null,
-        "title_name": "CKAD - Kubernetes Development",
-        "StartDate": "2020-08-04T12:33:49Z",
-        "EndtDate": "2020-08-04T12:33:49Z",
-        "persons": [
+        "TitleName": "CKAD - Kubernetes Development",
+        "StartDate": "2020-08-04T14:13:14Z",
+        "EndDate": "2020-08-04T14:13:14Z",
+        "LanguageId": 1,
+        "People": [
             {
                 "ID": 1,
-                "CreatedAt": "2020-08-04T12:33:49Z",
-                "UpdatedAt": "2020-08-04T12:33:49Z",
+                "CreatedAt": "2020-08-04T14:13:13Z",
+                "UpdatedAt": "2020-08-04T14:13:13Z",
                 "DeletedAt": null,
-                "person_name": "Goran Grujic",
-                "organizationId": 1,
-                "talkId": 1
+                "PersonName": "Goran Grujic",
+                "OrganizationId": 1,
+                "TalkId": 1
             }
         ],
-        "level": "Beginner",
-        "topics": null
+        "Level": "Beginner",
+        "Topics": null
     }
 ]
 ```
@@ -155,76 +156,78 @@ sm.HandleFunc("/topics", getTopics).Methods("GET") | http://localhost:9090//topi
 [
     {
         "ID": 1,
-        "CreatedAt": "2020-08-04T13:06:26Z",
-        "UpdatedAt": "2020-08-04T13:06:26Z",
+        "CreatedAt": "2020-08-04T14:13:14Z",
+        "UpdatedAt": "2020-08-04T14:13:14Z",
         "DeletedAt": null,
-        "title_name": "CKAD - Kubernetes Development",
-        "StartDate": "2020-08-04T13:06:26Z",
-        "EndtDate": "2020-08-04T13:06:26Z",
-        "persons": [
+        "TitleName": "CKAD - Kubernetes Development",
+        "StartDate": "2020-08-04T14:13:14Z",
+        "EndDate": "2020-08-04T14:13:14Z",
+        "LanguageId": 1,
+        "People": [
             {
                 "ID": 1,
-                "CreatedAt": "2020-08-04T13:06:26Z",
-                "UpdatedAt": "2020-08-04T13:06:26Z",
+                "CreatedAt": "2020-08-04T14:13:13Z",
+                "UpdatedAt": "2020-08-04T14:13:13Z",
                 "DeletedAt": null,
-                "person_name": "Goran Grujic",
-                "organizationId": 1,
-                "talkId": 1
+                "PersonName": "Goran Grujic",
+                "OrganizationId": 1,
+                "TalkId": 1
             }
         ],
-        "level": "Beginner",
-        "topics": [
+        "Level": "Beginner",
+        "Topics": [
             {
                 "ID": 1,
-                "CreatedAt": "2020-08-04T13:06:26Z",
-                "UpdatedAt": "2020-08-04T13:06:26Z",
+                "CreatedAt": "2020-08-04T14:13:14Z",
+                "UpdatedAt": "2020-08-04T14:13:14Z",
                 "DeletedAt": null,
-                "topic_name": "Kubernetes",
+                "TopicName": "Kubernetes",
                 "TalkId": 1,
-                "Childs": null,
+                "Children": null,
                 "Parents": null
             },
             {
                 "ID": 2,
-                "CreatedAt": "2020-08-04T13:06:27Z",
-                "UpdatedAt": "2020-08-04T13:06:27Z",
+                "CreatedAt": "2020-08-04T14:13:14Z",
+                "UpdatedAt": "2020-08-04T14:13:14Z",
                 "DeletedAt": null,
-                "topic_name": "Exam",
+                "TopicName": "Exam",
                 "TalkId": 1,
-                "Childs": null,
+                "Children": null,
                 "Parents": null
             }
         ]
     },
     {
         "ID": 2,
-        "CreatedAt": "2020-08-04T13:06:26Z",
-        "UpdatedAt": "2020-08-04T13:06:26Z",
+        "CreatedAt": "2020-08-04T14:13:14Z",
+        "UpdatedAt": "2020-08-04T14:13:14Z",
         "DeletedAt": null,
-        "title_name": "Weed - Rolling papers",
-        "StartDate": "2020-08-04T13:06:26Z",
-        "EndtDate": "2020-08-04T13:06:26Z",
-        "persons": [],
-        "level": "Architect",
-        "topics": [
+        "TitleName": "Weed - Rolling papers",
+        "StartDate": "2020-08-04T14:13:14Z",
+        "EndDate": "2020-08-04T14:13:14Z",
+        "LanguageId": 1,
+        "People": [],
+        "Level": "Architect",
+        "Topics": [
             {
                 "ID": 3,
-                "CreatedAt": "2020-08-04T13:06:27Z",
-                "UpdatedAt": "2020-08-04T13:06:27Z",
+                "CreatedAt": "2020-08-04T14:13:14Z",
+                "UpdatedAt": "2020-08-04T14:13:14Z",
                 "DeletedAt": null,
-                "topic_name": "Rolling Pappers",
+                "TopicName": "Rolling Pappers",
                 "TalkId": 2,
-                "Childs": null,
+                "Children": null,
                 "Parents": null
             },
             {
                 "ID": 4,
-                "CreatedAt": "2020-08-04T13:06:27Z",
-                "UpdatedAt": "2020-08-04T13:06:27Z",
+                "CreatedAt": "2020-08-04T14:13:14Z",
+                "UpdatedAt": "2020-08-04T14:13:14Z",
                 "DeletedAt": null,
-                "topic_name": "Weed",
+                "TopicName": "Weed",
                 "TalkId": 2,
-                "Childs": null,
+                "Children": null,
                 "Parents": null
             }
         ]
