@@ -152,7 +152,7 @@ func DbInit() {
 		},
 	}
 
-	db.Create(&Topic{TopicName: "Kubernetes", TalkId: 1, Childs:childs, Parents:parents})
+	db.Create(&Topic{TopicName: "Kubernetes", TalkId: 1, Children:childs, Parents:parents})
 	db.Create(&Topic{TopicName: "Exam", TalkId: 1})
 	db.Create(&Topic{TopicName: "Rolling Pappers", TalkId: 2})
 	db.Create(&Topic{TopicName: "Weed", TalkId: 2})
@@ -161,71 +161,71 @@ func DbInit() {
 
 type Location struct {
 	gorm.Model
-	LocationName string  `json:"location_name"`
-	Events       []Event `json:"events" gorm:"foreignkey:LocationId"`
+	LocationName string  `json:"LocationName"`
+	Events       []Event `json:"Events" gorm:"foreignkey:LocationId"`
 }
 
 type Event struct {
 	gorm.Model
-	EventName  string    `json:"event_name"`
+	EventName  string    `json:"EventName"`
 	StartDate  time.Time `json:"StartDate"`
-	EndDate    time.Time `json:"EndtDate"`
+	EndDate    time.Time `json:"EndDate"`
 	LocationId uint      `json:"-"`
 }
 
 type Organization struct {
 	gorm.Model
-	OrganizationName string   `json:"Organization_name"`
-	Persons          []Person `json:"persons" gorm:"foreignkey:OrganizationId"`
-	Rooms            []Room   `json:"rooms" gorm:"foreignkey:OrganizationId"`
+	OrganizationName string   `json:"OrganizationName"`
+	People          []Person `json:"People" gorm:"foreignkey:OrganizationId"`
+	Rooms            []Room   `json:"Rooms" gorm:"foreignkey:OrganizationId"`
 }
 
 type Person struct {
 	gorm.Model
-	PersonName     string `json:"person_name"`
-	OrganizationId uint   `json:"organizationId"`
-	TalkId         uint   `json:"talkId"`
+	PersonName     string `json:"PersonName"`
+	OrganizationId uint   `json:"OrganizationId"`
+	TalkId         uint   `json:"TalkId"`
 }
 
 type Room struct {
 	gorm.Model
-	RoomName       string `json:"room_name"`
-	OrganizationId uint   `json:"-"`
+	RoomName       string `json:"RoomName"`
+	OrganizationId uint   `json:"OrganizationId"`
 }
 
 type Language struct {
 	gorm.Model
-	LanguageName string `json:"room_name"`
-	Talks        []Talk `json:"talks" gorm:"foreignkey:LanguageId"`
+	LanguageName string `json:"LanguageName"`
+	Talks        []Talk `json:"Talks" gorm:"foreignkey:LanguageId"`
 }
 
 type Talk struct {
 	gorm.Model
-	TitleName  string    `json:"title_name"`
+	TitleName  string    `json:"TitleName"`
 	StartDate  time.Time `json:"StartDate"`
-	EndDate    time.Time `json:"EndtDate"`
-	LanguageId uint      `json:"-"`
-	Persons    []Person  `json:"persons" gorm:"foreignkey:TalkId"`
-	Level      string    `json:"level"`
-	Topics     []Topic   `json:"topics" gorm:"foreignkey:TalkId"`
+	EndDate    time.Time `json:"EndDate"`
+	LanguageId uint      `json:"LanguageId"`
+	People    []Person  `json:"People" gorm:"foreignkey:TalkId"`
+	Level      string    `json:"Level"`
+	Topics     []Topic   `json:"Topics" gorm:"foreignkey:TalkId"`
 }
 
 type Topic struct {
 	gorm.Model
-	TopicName string   `json:"topic_name"`
+	TopicName string   `json:"TopicName"`
 	TalkId    uint     `json:"TalkId"`
-	Childs    []Child  `gorm:"many2many:topic_childs;"`
+	Children    []Child  `gorm:"many2many:topic_children;"`
 	Parents   []Parent `gorm:"many2many:topic_parents;"`
 }
 
 type Child struct {
 	gorm.Model
-	TopicName string `json:"topic_name"`
+	TopicName string `json:"TopicName"`
 }
 
 type Parent struct {
 	gorm.Model
-	TopicName string `json:"topic_name"`
+	TopicName string `json:"TopicName"`
 }
 
 func deleteLocation(w http.ResponseWriter, r *http.Request) {
@@ -310,9 +310,9 @@ func getOneEvent(w http.ResponseWriter, r *http.Request) {
 func getPersons(w http.ResponseWriter, e *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
-	var persons []Person
-	db.Find(&persons)
-	json.NewEncoder(w).Encode(persons)
+	var people []Person
+	db.Find(&people)
+	json.NewEncoder(w).Encode(people)
 }
 
 func getTalks(w http.ResponseWriter, r *http.Request) {
@@ -323,7 +323,7 @@ func getTalks(w http.ResponseWriter, r *http.Request) {
 	inputPersonId := params["personId"]
 
 	var talks [] Talk
-	db.Preload("Persons").Find(&talks, inputPersonId)
+	db.Preload("People").Find(&talks, inputPersonId)
 	json.NewEncoder(w).Encode(talks)
 
 }
@@ -333,7 +333,7 @@ func getTopics(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
 	var topics [] Talk
-	db.Preload("Topics").Preload("Persons").Find(&topics)
+	db.Preload("Topics").Preload("People").Find(&topics)
 	json.NewEncoder(w).Encode(topics)
 
 }
