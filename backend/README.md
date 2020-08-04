@@ -49,30 +49,29 @@ sm.HandleFunc("/topics", getTopics).Methods("GET") | http://localhost:9090//topi
 [
     {
         "ID": 1,
-        "CreatedAt": "2020-08-03T22:50:31Z",
-        "UpdatedAt": "2020-08-03T22:50:32Z",
+        "CreatedAt": "2020-08-04T14:13:13Z",
+        "UpdatedAt": "2020-08-04T14:13:13Z",
         "DeletedAt": null,
-        "location_name": "Beograd",
-        "events": [
+        "LocationName": "Beograd",
+        "Events": [
             {
                 "ID": 1,
-                "CreatedAt": "2020-08-03T22:50:09Z",
-                "UpdatedAt": "2020-08-03T22:50:10Z",
+                "CreatedAt": "2020-08-04T14:13:13Z",
+                "UpdatedAt": "2020-08-04T14:13:13Z",
                 "DeletedAt": null,
-                "event_name": "PAC",
-                "StartDate": "0000-00-00",
-                "EndtDate": "0000-00-00"
-            },
-            {
-                "ID": 2,
-                "CreatedAt": "2020-08-03T22:56:18Z",
-                "UpdatedAt": "2020-08-03T22:56:21Z",
-                "DeletedAt": null,
-                "event_name": "Kubernetes",
-                "StartDate": "0000-00-00",
-                "EndtDate": "0000-00-00"
+                "EventName": "Heapcon Belgrade",
+                "StartDate": "2020-08-04T14:13:13Z",
+                "EndDate": "2020-08-04T14:13:13Z"
             }
         ]
+    },
+    {
+        "ID": 2,
+        "CreatedAt": "2020-08-04T14:13:13Z",
+        "UpdatedAt": "2020-08-04T14:13:13Z",
+        "DeletedAt": null,
+        "LocationName": "Smederevo",
+        "Events": []
     }
 ]
 ```
@@ -81,28 +80,19 @@ sm.HandleFunc("/topics", getTopics).Methods("GET") | http://localhost:9090//topi
 ```
 {
     "ID": 1,
-    "CreatedAt": "2020-08-03T22:50:31Z",
-    "UpdatedAt": "2020-08-03T22:50:32Z",
+    "CreatedAt": "2020-08-04T14:13:13Z",
+    "UpdatedAt": "2020-08-04T14:13:13Z",
     "DeletedAt": null,
-    "location_name": "Beograd",
-    "events": [
+    "LocationName": "Beograd",
+    "Events": [
         {
             "ID": 1,
-            "CreatedAt": "2020-08-03T22:50:09Z",
-            "UpdatedAt": "2020-08-03T22:50:10Z",
+            "CreatedAt": "2020-08-04T14:13:13Z",
+            "UpdatedAt": "2020-08-04T14:13:13Z",
             "DeletedAt": null,
-            "event_name": "PAC",
-            "StartDate": "2020-08-03T22:58:13Z",
-            "EndtDate": "2020-08-03T22:58:16Z"
-        },
-        {
-            "ID": 2,
-            "CreatedAt": "2020-08-03T22:56:18Z",
-            "UpdatedAt": "2020-08-03T22:56:21Z",
-            "DeletedAt": null,
-            "event_name": "Kubernetes",
-            "StartDate": "2020-08-03T22:58:17Z",
-            "EndtDate": "2020-08-03T22:58:18Z"
+            "EventName": "Heapcon Belgrade",
+            "StartDate": "2020-08-04T14:13:13Z",
+            "EndDate": "2020-08-04T14:13:13Z"
         }
     ]
 }
