@@ -66,6 +66,9 @@ func main() {
 	sm.HandleFunc("/locations/{locationId}", deleteLocation).Methods("DELETE")
 	sm.HandleFunc("/events", getAllEvents).Methods("GET")
 	sm.HandleFunc("/events/{eventId}", getOneEvent).Methods("GET")
+	sm.HandleFunc("/persons", getPersons).Methods("GET")
+	sm.HandleFunc("/talks/person/{personId}", getTalks).Methods("GET")
+	sm.HandleFunc("/topics", getTopics).Methods("GET")
 
 	// create Server
 	s := http.Server{
@@ -154,9 +157,6 @@ func DbInit() {
 	db.Create(&Topic{TopicName: "Rolling Pappers", TalkId: 2})
 	db.Create(&Topic{TopicName: "Weed", TalkId: 2})
 
-
-
-
 }
 
 type Location struct {
@@ -183,8 +183,8 @@ type Organization struct {
 type Person struct {
 	gorm.Model
 	PersonName     string `json:"person_name"`
-	OrganizationId uint   `json:"-"`
-	TalkId         uint   `json:"-"`
+	OrganizationId uint   `json:"organizationId"`
+	TalkId         uint   `json:"talkId"`
 }
 
 type Room struct {
@@ -213,7 +213,7 @@ type Talk struct {
 type Topic struct {
 	gorm.Model
 	TopicName string   `json:"topic_name"`
-	TalkId    uint     `json:"-"`
+	TalkId    uint     `json:"TalkId"`
 	Childs    []Child  `gorm:"many2many:topic_childs;"`
 	Parents   []Parent `gorm:"many2many:topic_parents;"`
 }
@@ -303,5 +303,37 @@ func getOneEvent(w http.ResponseWriter, r *http.Request) {
 	var event Event
 	db.First(&event, inputEventId)
 	json.NewEncoder(w).Encode(event)
+
+}
+
+
+func getPersons(w http.ResponseWriter, e *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+	var persons []Person
+	db.Find(&persons)
+	json.NewEncoder(w).Encode(persons)
+}
+
+func getTalks(w http.ResponseWriter, r *http.Request) {
+
+
+	w.Header().Set("Content-Type", "application/json")
+	params := mux.Vars(r)
+	inputPersonId := params["personId"]
+
+	var talks [] Talk
+	db.Preload("Persons").Find(&talks, inputPersonId)
+	json.NewEncoder(w).Encode(talks)
+
+}
+
+func getTopics(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+
+	var topics [] Talk
+	db.Preload("Topics").Preload("Persons").Find(&topics)
+	json.NewEncoder(w).Encode(topics)
 
 }
