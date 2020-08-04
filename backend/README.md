@@ -42,6 +42,7 @@ sm.HandleFunc("/locations/{locationId}", updateLocation).Methods("PUT") | http:/
 sm.HandleFunc("/locations/{locationId}", deleteLocation).Methods("DELETE") | http://localhost:9090/locations/1 | DELETE |  | 
 sm.HandleFunc("/persons", getPersons).Methods("GET") | http://localhost:9090/persons | GET |  | 
 sm.HandleFunc("/talks/person/{personId}", getTalks).Methods("GET") | http://localhost:9090//talks/person/1 | GET |  | 
+sm.HandleFunc("/topics", getTopics).Methods("GET") | http://localhost:9090//topics | GET |  | 
 
 #### GET ALL locations and there event
 ```
@@ -146,6 +147,87 @@ sm.HandleFunc("/talks/person/{personId}", getTalks).Methods("GET") | http://loca
         ],
         "level": "Beginner",
         "topics": null
+    }
+]
+```
+#### GET TOPICS AND TALKS AND PERSONS
+```
+[
+    {
+        "ID": 1,
+        "CreatedAt": "2020-08-04T13:06:26Z",
+        "UpdatedAt": "2020-08-04T13:06:26Z",
+        "DeletedAt": null,
+        "title_name": "CKAD - Kubernetes Development",
+        "StartDate": "2020-08-04T13:06:26Z",
+        "EndtDate": "2020-08-04T13:06:26Z",
+        "persons": [
+            {
+                "ID": 1,
+                "CreatedAt": "2020-08-04T13:06:26Z",
+                "UpdatedAt": "2020-08-04T13:06:26Z",
+                "DeletedAt": null,
+                "person_name": "Goran Grujic",
+                "organizationId": 1,
+                "talkId": 1
+            }
+        ],
+        "level": "Beginner",
+        "topics": [
+            {
+                "ID": 1,
+                "CreatedAt": "2020-08-04T13:06:26Z",
+                "UpdatedAt": "2020-08-04T13:06:26Z",
+                "DeletedAt": null,
+                "topic_name": "Kubernetes",
+                "TalkId": 1,
+                "Childs": null,
+                "Parents": null
+            },
+            {
+                "ID": 2,
+                "CreatedAt": "2020-08-04T13:06:27Z",
+                "UpdatedAt": "2020-08-04T13:06:27Z",
+                "DeletedAt": null,
+                "topic_name": "Exam",
+                "TalkId": 1,
+                "Childs": null,
+                "Parents": null
+            }
+        ]
+    },
+    {
+        "ID": 2,
+        "CreatedAt": "2020-08-04T13:06:26Z",
+        "UpdatedAt": "2020-08-04T13:06:26Z",
+        "DeletedAt": null,
+        "title_name": "Weed - Rolling papers",
+        "StartDate": "2020-08-04T13:06:26Z",
+        "EndtDate": "2020-08-04T13:06:26Z",
+        "persons": [],
+        "level": "Architect",
+        "topics": [
+            {
+                "ID": 3,
+                "CreatedAt": "2020-08-04T13:06:27Z",
+                "UpdatedAt": "2020-08-04T13:06:27Z",
+                "DeletedAt": null,
+                "topic_name": "Rolling Pappers",
+                "TalkId": 2,
+                "Childs": null,
+                "Parents": null
+            },
+            {
+                "ID": 4,
+                "CreatedAt": "2020-08-04T13:06:27Z",
+                "UpdatedAt": "2020-08-04T13:06:27Z",
+                "DeletedAt": null,
+                "topic_name": "Weed",
+                "TalkId": 2,
+                "Childs": null,
+                "Parents": null
+            }
+        ]
     }
 ]
 ```
