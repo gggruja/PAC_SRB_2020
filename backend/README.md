@@ -40,6 +40,7 @@ sm.HandleFunc("/locations", getLocations).Methods("GET") | http://localhost:9090
 sm.HandleFunc("/locations/{locationId}", getLocation).Methods("GET") | http://localhost:9090/locations/1 | GET |  | 
 sm.HandleFunc("/locations/{locationId}", updateLocation).Methods("PUT") | http://localhost:9090/locations/1 | PUT |  | 
 sm.HandleFunc("/locations/{locationId}", deleteLocation).Methods("DELETE") | http://localhost:9090/locations/1 | DELETE |  | 
+sm.HandleFunc("/persons", getPersons).Methods("GET") | http://localhost:9090/persons | GET |  | 
 
 #### GET ALL locations and there event
 ```
@@ -74,7 +75,7 @@ sm.HandleFunc("/locations/{locationId}", deleteLocation).Methods("DELETE") | htt
 ]
 ```
 
-#### GET ONE LOCATION AMD ALL EVENTS
+#### GET ONE LOCATION AND ALL EVENTS
 ```
 {
     "ID": 1,
@@ -104,3 +105,19 @@ sm.HandleFunc("/locations/{locationId}", deleteLocation).Methods("DELETE") | htt
     ]
 }
 ```
+
+#### GET ALL PERSONS
+```
+[
+    {
+        "ID": 1,
+        "CreatedAt": "2020-08-04T12:13:44Z",
+        "UpdatedAt": "2020-08-04T12:13:44Z",
+        "DeletedAt": null,
+        "person_name": "Goran Grujic",
+        "organizationId": 1,
+        "talkId": 1
+    }
+]
+```
+
