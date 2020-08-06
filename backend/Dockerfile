@@ -1,5 +1,5 @@
 # Golang base image used to build the application in the first phase
-FROM golang:alpine as builder
+FROM golang:alpine AS builder
 
 # Maintainer
 LABEL maintainer="Goran Grujic <goran.grujic@prodyna.com>"

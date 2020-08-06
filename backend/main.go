@@ -51,14 +51,13 @@ func main() {
 
 	defer db.Close()
 
-	DbInit()
-
 	sm := mux.NewRouter()
 
 	sm.HandleFunc("/", healthChecking)
 	sm.Handle("/metrics", promhttp.Handler())
+	sm.HandleFunc("/init", DbInit).Methods("GET")
 
-	//LOCATIONS API's
+	//API's
 	sm.HandleFunc("/locations", createLocations).Methods("POST")
 	sm.HandleFunc("/locations", getLocations).Methods("GET")
 	sm.HandleFunc("/locations/{locationId}", getLocation).Methods("GET")
@@ -104,7 +103,11 @@ func main() {
 	s.Shutdown(ctx)
 }
 
-func DbInit() {
+func DbInit(rw http.ResponseWriter, r *http.Request) {
+
+	log.Println("Init DB!")
+
+	rw.Header().Set("Content-Type", "text/plain")
 
 	// Drop
 	db.DropTableIfExists(&Location{}, &Event{}, &Organization{}, &Person{}, &Room{},
@@ -156,6 +159,10 @@ func DbInit() {
 	db.Create(&Topic{TopicName: "Exam", TalkId: 1})
 	db.Create(&Topic{TopicName: "Rolling Pappers", TalkId: 2})
 	db.Create(&Topic{TopicName: "Weed", TalkId: 2})
+
+	log.Println("Init DB, done!")
+
+	rw.WriteHeader(http.StatusOK)
 
 }
 
