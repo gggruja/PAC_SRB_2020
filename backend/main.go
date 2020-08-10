@@ -255,6 +255,7 @@ func updateLocation(w http.ResponseWriter, r *http.Request) {
 	db.Save(&updatedLocation)
 
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	json.NewEncoder(w).Encode(updatedLocation)
 
 }
@@ -262,6 +263,7 @@ func updateLocation(w http.ResponseWriter, r *http.Request) {
 func getLocation(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	params := mux.Vars(r)
 	inputLocationId := params["locationId"]
 
@@ -274,6 +276,7 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 func getLocations(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	var locations []Location
 	db.Preload("Events").Find(&locations)
@@ -288,6 +291,7 @@ func createLocations(w http.ResponseWriter, r *http.Request) {
 
 	db.Create(&location)
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	json.NewEncoder(w).Encode(location)
 
 }
@@ -295,6 +299,7 @@ func createLocations(w http.ResponseWriter, r *http.Request) {
 func getAllEvents(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	var events []Event
 	db.Find(&events)
 	json.NewEncoder(w).Encode(events)
@@ -304,6 +309,7 @@ func getAllEvents(w http.ResponseWriter, r *http.Request) {
 func getOneEvent(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	params := mux.Vars(r)
 	inputEventId := params["eventId"]
 
@@ -317,6 +323,7 @@ func getOneEvent(w http.ResponseWriter, r *http.Request) {
 func getPersons(w http.ResponseWriter, e *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	var people []Person
 	db.Find(&people)
 	json.NewEncoder(w).Encode(people)
@@ -326,6 +333,7 @@ func getTalks(w http.ResponseWriter, r *http.Request) {
 
 
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	params := mux.Vars(r)
 	inputPersonId := params["personId"]
 
@@ -338,6 +346,7 @@ func getTalks(w http.ResponseWriter, r *http.Request) {
 func getTopics(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	var topics [] Talk
 	db.Preload("Topics").Preload("People").Find(&topics)
