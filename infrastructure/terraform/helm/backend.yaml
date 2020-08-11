@@ -6,7 +6,7 @@ envFrom:
 - configMapRef:
     name: backend-config
 - secretRef:
-    name: keycloak-mariadb-access
+    name: backend-mariadb-access
 ingress:
   enabled: true
   hosts:

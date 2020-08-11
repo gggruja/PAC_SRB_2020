@@ -1,3 +1,8 @@
+locals {
+  backend_username = "backend"
+  backend_database = "backend"
+}
+
 resource "kubernetes_namespace" "backend" {
   metadata {
     name = "backend"
@@ -11,9 +16,9 @@ resource "helm_release" "backend" {
   namespace = kubernetes_namespace.backend.metadata[0].name
 
   depends_on = [
-    helm_release.keycloak-mariadb,
+    helm_release.backend-mariadb,
     kubernetes_config_map.backend-config,
-    kubernetes_secret.mariadb-access
+    kubernetes_secret.backend-mariadb-access
   ]
 
   values = [
@@ -28,10 +33,11 @@ resource "kubernetes_config_map" "backend-config" {
   }
 
   data = {
+    BIND_ADDRESS = ":80"
     DB_DRIVER = "mysql"
-    DB_HOST = helm_release.keycloak-mariadb.metadata[0].name
-    DB_PORT = "3360"
-    DB_NAME = "keycloak"
+    DB_HOST = helm_release.backend-mariadb.metadata[0].name
+    DB_PORT = "3306"
+    DB_NAME = "backend"
   }
 }
 
@@ -72,5 +78,56 @@ resource "kubernetes_cron_job" "backend-init-db" {
         }
       }
     }
+  }
+}
+
+
+resource "random_password" "backend-mariadb-password" {
+  length = 16
+  special = false
+}
+
+resource "kubernetes_secret" "backend-mariadb-access" {
+  metadata {
+    name = "backend-mariadb-access"
+    namespace = kubernetes_namespace.backend.metadata[0].name
+  }
+
+  data = {
+    DB_USER = "backend"
+    DB_PASSWORD = random_password.backend-mariadb-password.result
+    "username" = local.backend_username
+    "database" = local.backend_database
+    "password" = random_password.backend-mariadb-password.result
+  }
+}
+
+resource "helm_release" "backend-mariadb" {
+  name = "backend-mariadb"
+  chart = "mariadb"
+  repository = local.helm_repository_bitnami
+  namespace = kubernetes_namespace.backend.metadata[0].name
+
+  depends_on = [
+    helm_release.prometheus-operator
+  ]
+
+  values = [
+    file("helm/backend-database.yaml")
+  ]
+
+  set {
+    name = "db.user"
+    value = local.backend_username
+  }
+
+  set {
+    name = "db.name"
+    value = local.backend_database
+  }
+
+  set {
+    name = "db.password"
+    value = random_password.backend-mariadb-password.result
   }
 }

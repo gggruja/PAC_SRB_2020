@@ -43,7 +43,13 @@ func main() {
 
 	fmt.Println("Go with MariaDB")
 
-	db, err = gorm.Open("mysql", cnf.BindDatabase)
+	var dbUrl string
+
+	fmt.Println(dbUrl)
+	dbUrl = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", cnf.DbUser, cnf.DbPassword, cnf.DbHost, cnf.DbPort, cnf.DbName)
+	fmt.Println(dbUrl)
+
+	db, err = gorm.Open(cnf.DbDriver, dbUrl)
 
 	if err != nil {
 		panic(err.Error())
@@ -117,7 +123,6 @@ func DbInit(rw http.ResponseWriter, r *http.Request) {
 	db.AutoMigrate(&Location{}, &Event{}, &Organization{}, &Person{}, &Room{},
 		&Language{}, &Talk{}, &Topic{}, &Child{}, &Parent{})
 
-
 	// Create records
 	db.Create(&Location{LocationName: "Beograd"})
 	db.Create(&Location{LocationName: "Smederevo"})
@@ -137,25 +142,25 @@ func DbInit(rw http.ResponseWriter, r *http.Request) {
 	db.Create(&Talk{TitleName: "CKAD - Kubernetes Development", StartDate: time.Now(), EndDate: time.Now(), LanguageId: 1, Level: "Beginner"})
 	db.Create(&Talk{TitleName: "Weed - Rolling papers", StartDate: time.Now(), EndDate: time.Now(), LanguageId: 1, Level: "Architect"})
 
-	var childs = []Child {
-		Child {
+	var childs = []Child{
+		Child{
 			TopicName: "Kubernetes Child 1",
 		},
-		Child {
+		Child{
 			TopicName: "Kubernetes Child 2",
 		},
 	}
 
-	var parents = []Parent {
-		Parent {
+	var parents = []Parent{
+		Parent{
 			TopicName: "Kubernetes Parent 1",
 		},
-		Parent {
+		Parent{
 			TopicName: "Kubernetes Parent 2",
 		},
 	}
 
-	db.Create(&Topic{TopicName: "Kubernetes", TalkId: 1, Children:childs, Parents:parents})
+	db.Create(&Topic{TopicName: "Kubernetes", TalkId: 1, Children: childs, Parents: parents})
 	db.Create(&Topic{TopicName: "Exam", TalkId: 1})
 	db.Create(&Topic{TopicName: "Rolling Pappers", TalkId: 2})
 	db.Create(&Topic{TopicName: "Weed", TalkId: 2})
@@ -183,7 +188,7 @@ type Event struct {
 type Organization struct {
 	gorm.Model
 	OrganizationName string   `json:"OrganizationName"`
-	People          []Person `json:"People" gorm:"foreignkey:OrganizationId"`
+	People           []Person `json:"People" gorm:"foreignkey:OrganizationId"`
 	Rooms            []Room   `json:"Rooms" gorm:"foreignkey:OrganizationId"`
 }
 
@@ -212,7 +217,7 @@ type Talk struct {
 	StartDate  time.Time `json:"StartDate"`
 	EndDate    time.Time `json:"EndDate"`
 	LanguageId uint      `json:"LanguageId"`
-	People    []Person  `json:"People" gorm:"foreignkey:TalkId"`
+	People     []Person  `json:"People" gorm:"foreignkey:TalkId"`
 	Level      string    `json:"Level"`
 	Topics     []Topic   `json:"Topics" gorm:"foreignkey:TalkId"`
 }
@@ -221,7 +226,7 @@ type Topic struct {
 	gorm.Model
 	TopicName string   `json:"TopicName"`
 	TalkId    uint     `json:"TalkId"`
-	Children    []Child  `gorm:"many2many:topic_children;"`
+	Children  []Child  `gorm:"many2many:topic_children;"`
 	Parents   []Parent `gorm:"many2many:topic_parents;"`
 }
 
@@ -319,7 +324,6 @@ func getOneEvent(w http.ResponseWriter, r *http.Request) {
 
 }
 
-
 func getPersons(w http.ResponseWriter, e *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
@@ -331,13 +335,12 @@ func getPersons(w http.ResponseWriter, e *http.Request) {
 
 func getTalks(w http.ResponseWriter, r *http.Request) {
 
-
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	params := mux.Vars(r)
 	inputPersonId := params["personId"]
 
-	var talks [] Talk
+	var talks []Talk
 	db.Preload("People").Find(&talks, inputPersonId)
 	json.NewEncoder(w).Encode(talks)
 
@@ -348,7 +351,7 @@ func getTopics(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	var topics [] Talk
+	var topics []Talk
 	db.Preload("Topics").Preload("People").Find(&topics)
 	json.NewEncoder(w).Encode(topics)
 
