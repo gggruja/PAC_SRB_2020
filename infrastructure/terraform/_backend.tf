@@ -10,9 +10,29 @@ resource "helm_release" "backend" {
   chart = "../chart/backend"
   namespace = kubernetes_namespace.backend.metadata[0].name
 
+  depends_on = [
+    helm_release.keycloak-mariadb,
+    kubernetes_config_map.backend-config,
+    kubernetes_secret.mariadb-access
+  ]
+
   values = [
     file("helm/backend.yaml")
   ]
+}
+
+resource "kubernetes_config_map" "backend-config" {
+  metadata {
+    name = "backend-config"
+    namespace = kubernetes_namespace.backend.metadata[0].name
+  }
+
+  data = {
+    DB_DRIVER = "mysql"
+    DB_HOST = helm_release.keycloak-mariadb.metadata[0].name
+    DB_PORT = "3360"
+    DB_NAME = "keycloak"
+  }
 }
 
 resource "kubernetes_cron_job" "backend-init-db" {

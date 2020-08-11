@@ -1,6 +1,12 @@
 image:
+  repository: backend-go
   tag: "latest"
   pullPolicy: IfNotPresent
+envFrom:
+- configMapRef:
+    name: backend-config
+- secretRef:
+    name: keycloak-mariadb-access
 ingress:
   enabled: true
   hosts:

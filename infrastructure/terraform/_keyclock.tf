@@ -88,6 +88,7 @@ resource "helm_release" "keycloak" {
   name = "keycloak"
   namespace = kubernetes_namespace.keycloak.metadata[0].name
   chart = "keycloak"
+  version = "8.3.0"
   repository = local.helm_repository_codecentric
 
   values = [
