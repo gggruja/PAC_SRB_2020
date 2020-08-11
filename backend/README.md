@@ -6,33 +6,109 @@ docker build . -t backend-go
 
 # Available REST API's:
 
-## EVENTS
-
-### POJO
-
-```
-type Event struct {
-	gorm.Model
-	EventName string  `json:"event_name"`
-	StartDate time.Time `json:"StartDate"`
-	EndDate time.Time `json:"EndtDate"`
-	LocationId uint   `json:"-"`
-}
-```
-
-## LOCATIONS
-
-### POJO
+## POJO's
 
 ```
 type Location struct {
 	gorm.Model
-	LocationName string `json:"location_name"`
-	Events []Event    `json:"events" gorm:"foreignkey:LocationId"`
+	LocationName string  `json:"LocationName"`
+	Events       []Event `json:"Events" gorm:"foreignkey:LocationId"`
+	Rooms        []Room  `json:"Rooms" gorm:"foreignkey:LocationId"`
+}
+
+type Room struct {
+	gorm.Model
+	RoomName   string `json:"RoomName"`
+	Talk       Talk   `gorm:"foreignkey:TalkId"`
+	LocationId uint   `json:"-"`
+}
+
+type Event struct {
+	gorm.Model
+	EventName  string    `json:"EventName"`
+	StartDate  time.Time `json:"StartDate"`
+	EndDate    time.Time `json:"EndDate"`
+	LocationId uint      `json:"-"`
+}
+
+type Organization struct {
+	gorm.Model
+	OrganizationName string   `json:"OrganizationName"`
+	People           []Person `json:"People" gorm:"foreignkey:OrganizationId"`
+}
+
+type Person struct {
+	gorm.Model
+	PersonName     string `json:"PersonName"`
+	OrganizationId uint   `json:"-"`
+	TalkId         uint   `json:"TalkId"`
+}
+
+type Language struct {
+	gorm.Model
+	LanguageName string `json:"LanguageName"`
+	Talks        []Talk `json:"Talks" gorm:"foreignkey:LanguageId"`
+}
+
+type Talk struct {
+	gorm.Model
+	TitleName  string    `json:"TitleName"`
+	StartDate  time.Time `json:"StartDate"`
+	EndDate    time.Time `json:"EndDate"`
+	LanguageId uint      `json:"-"`
+	People     []Person  `json:"People" gorm:"foreignkey:TalkId"`
+	Level      string    `json:"Level"`
+	Topics     []Topic   `json:"Topics" gorm:"foreignkey:TalkId"`
+	RoomId     uint      `json:"RoomId"`
+}
+
+type Topic struct {
+	gorm.Model
+	TopicName string   `json:"TopicName"`
+	TalkId    uint     `json:"-"`
+	Children  []Child  `gorm:"many2many:topic_children;"`
+	Parents   []Parent `gorm:"many2many:topic_parents;"`
+}
+
+type Child struct {
+	gorm.Model
+	TopicName string `json:"TopicName"`
+}
+
+type Parent struct {
+	gorm.Model
+	TopicName string `json:"TopicName"`
 }
 ```
 
-### REST
+### SETTINGS API's
+Code | REST API | METHOD | COMMENT |
+--- | --- | --- | --- |
+sm.HandleFunc("/", healthChecking) | http://localhost:9090/ | GET | Health checking for Kubernetes probes | 
+sm.Handle("/metrics", promhttp.Handler()) | http://localhost:9090/metrics | GET | Metrics scraper API, for prometheus | 
+sm.HandleFunc("/init", DbInit).Methods("GET") | http://localhost:9090/init | GET | Database initialization, run by kubernetes job | 
+
+### VIEW API's
+Code | REST API | METHOD | COMMENT |
+--- | --- | --- | --- |
+sm.HandleFunc("/api/events", getListOfAllEvents).Methods("GET") | http://localhost:9090/api/events | GET | Event view | 
+
+#### Event view
+```
+[
+    {
+        "EventName": "Event in Belgrade",
+        "StartDate": "2020-08-11T14:16:10+02:00",
+        "EndDate": "2020-08-11T14:16:10+02:00",
+        "LocationName": "Beograd",
+        "RoomName": "Hawaii",
+        "TitleName": "CKAD - Kubernetes Development",
+        "TopicName": "Kubernetes"
+    }
+]
+```
+
+### CRUD REST API's
 Code | REST API | METHOD | COMMENT |
 --- | --- | --- | --- |
 sm.HandleFunc("/locations", createLocations).Methods("POST") | http://localhost:9090/locations | POST |  | 
@@ -40,9 +116,7 @@ sm.HandleFunc("/locations", getLocations).Methods("GET") | http://localhost:9090
 sm.HandleFunc("/locations/{locationId}", getLocation).Methods("GET") | http://localhost:9090/locations/1 | GET |  | 
 sm.HandleFunc("/locations/{locationId}", updateLocation).Methods("PUT") | http://localhost:9090/locations/1 | PUT |  | 
 sm.HandleFunc("/locations/{locationId}", deleteLocation).Methods("DELETE") | http://localhost:9090/locations/1 | DELETE |  | 
-sm.HandleFunc("/persons", getPersons).Methods("GET") | http://localhost:9090/persons | GET |  | 
-sm.HandleFunc("/talks/person/{personId}", getTalks).Methods("GET") | http://localhost:9090//talks/person/1 | GET |  | 
-sm.HandleFunc("/topics", getTopics).Methods("GET") | http://localhost:9090//topics | GET |  | 
+
 
 #### GET ALL locations and there event
 ```
