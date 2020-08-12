@@ -2,7 +2,7 @@
 
 This is a public repository, for PAC 2019 Task 1.1
 
-docker build . -t backend-go
+docker build . -t backend
 
 # Available REST API's:
 

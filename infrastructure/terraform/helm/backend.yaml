@@ -1,5 +1,5 @@
 image:
-  repository: backend-go
+  repository: backend
   tag: "latest"
   pullPolicy: IfNotPresent
 envFrom:
