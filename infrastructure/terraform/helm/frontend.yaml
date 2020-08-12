@@ -1,0 +1,10 @@
+image:
+  repository: frontend
+  tag: "latest"
+  pullPolicy: IfNotPresent
+ingress:
+  enabled: true
+  hosts:
+    - host: conference.frontend
+      paths:
+        - "/"
