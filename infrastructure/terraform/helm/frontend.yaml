@@ -5,6 +5,6 @@ image:
 ingress:
   enabled: true
   hosts:
-    - host: conference.frontend
+    - host: conference
       paths:
         - "/"

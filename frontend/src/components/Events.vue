@@ -40,7 +40,7 @@
         },
         methods: {
             getEvents() {
-                fetch(process.env.VUE_APP_BACKEND_URL + "/api/events")
+                fetch(window.location.origin + "/api/events")
                     .then(response => response.json())
                     .then(data => (this.events = data));
             }

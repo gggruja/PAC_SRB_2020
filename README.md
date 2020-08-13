@@ -32,9 +32,7 @@ minikube addons enable ingres
         
 5. add in hosts file: 
 
-minikube_ip	conference.frontend
-
-minikube_ip	conference.backend
+minikube_ip	conference
 
 minikube_ip	conference.keycloak
 
@@ -46,4 +44,4 @@ minikube_ip	conference.prometheus
 
 ./install
 
-7. Go to http://conference.frontend/ 
+7. Go to http://conference/ 

@@ -10,6 +10,6 @@ envFrom:
 ingress:
   enabled: true
   hosts:
-    - host: conference.backend
+    - host: conference
       paths:
-        - "/"
+        - "/api"
