@@ -46,7 +46,8 @@ func main() {
 	var dbUrl string
 
 	fmt.Println(dbUrl)
-	dbUrl = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local", cnf.DbUser, cnf.DbPassword, cnf.DbHost, cnf.DbPort, cnf.DbName)
+	dbUrl = fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=True&loc=Local",
+		cnf.DbUser, cnf.DbPassword, cnf.DbHost, cnf.DbPort, cnf.DbName)
 	fmt.Println(dbUrl)
 
 	db, err = gorm.Open(cnf.DbDriver, dbUrl)
@@ -170,8 +171,13 @@ func DbInit(rw http.ResponseWriter, r *http.Request) {
 	db.Create(&Location{LocationName: "Beograd"})
 	db.Create(&Location{LocationName: "Smederevo"})
 
-	db.Create(&Event{EventName: "Event in Belgrade", StartDate: time.Date(2021, time.Month(2), 12, 0, 0, 0, 0, time.UTC), EndDate: time.Date(2021, time.Month(2), 15, 0, 0, 0, 0, time.UTC), LocationId: 1})
-	db.Create(&Event{EventName: "Event in Smederevo", StartDate: time.Date(2021, time.Month(3), 12, 0, 0, 0, 0, time.UTC), EndDate: time.Date(2021, time.Month(3), 15, 0, 0, 0, 0, time.UTC), LocationId: 2})
+	db.Create(&Event{EventName: "Event in Belgrade", StartDate: time.Date(2021, time.Month(2),
+		12, 0, 0, 0, 0, time.UTC), EndDate: time.Date(2021, time.Month(2),
+			15, 0, 0, 0, 0, time.UTC), LocationId: 1})
+
+	db.Create(&Event{EventName: "Event in Smederevo", StartDate: time.Date(2021, time.Month(3),
+		12, 0, 0, 0, 0, time.UTC), EndDate: time.Date(2021, time.Month(3),
+			15, 0, 0, 0, 0, time.UTC), LocationId: 2})
 
 	db.Create(&Room{RoomName: "Hawaii", LocationId: 1})
 	db.Create(&Room{RoomName: "Bora Bora", LocationId: 2})
@@ -208,8 +214,13 @@ func DbInit(rw http.ResponseWriter, r *http.Request) {
 	db.Create(&Language{LanguageName: "English"})
 	db.Create(&Language{LanguageName: "German"})
 
-	db.Create(&Talk{TitleName: "CKAD - Kubernetes Development", StartDate: time.Date(2021, time.Month(2), 12, 12, 0, 0, 0, time.UTC), EndDate: time.Date(2021, time.Month(2), 12, 13, 0, 0, 0, time.UTC), LanguageId: 1, Level: "Junior", RoomId: 1, People:[]Person{personGG, personZZ}})
-	db.Create(&Talk{TitleName: "Event-driven microservices: what can go wrong?", StartDate: time.Date(2021, time.Month(2), 12, 13, 0, 0, 0, time.UTC), EndDate: time.Date(2021, time.Month(2), 12, 14, 0, 0, 0, time.UTC), LanguageId: 2, Level: "Junior", RoomId: 2, People:[]Person{personDK, personTB}})
+	db.Create(&Talk{TitleName: "CKAD - Kubernetes Development", StartDate: time.Date(2021, time.Month(2),
+		12, 12, 0, 0, 0, time.UTC), EndDate: time.Date(2021, time.Month(2),
+			12, 13, 0, 0, 0, time.UTC), LanguageId: 1, Level: "Junior", RoomId: 1, People:[]Person{personGG, personZZ}})
+
+	db.Create(&Talk{TitleName: "Event-driven microservices: what can go wrong?", StartDate: time.Date(2021, time.Month(2),
+		12, 13, 0, 0, 0, time.UTC), EndDate: time.Date(2021, time.Month(2),
+			12, 14, 0, 0, 0, time.UTC), LanguageId: 2, Level: "Junior", RoomId: 2, People:[]Person{personDK, personTB}})
 
 	var childs = []Child{
 		Child{
