@@ -133,6 +133,9 @@ Code | REST API | METHOD | COMMENT |
 sm.HandleFunc("/api/events", getListOfAllEvents).Methods("GET") | http://localhost:9090/api/events | GET | Event view | 
 sm.HandleFunc("/api/persons", getPersons).Methods("GET") | http://localhost:9090/api/persons | GET | Person view | 
 sm.HandleFunc("/api/persons/{personId:[0-9]+}/talks", getAllTalksForOnePerson).Methods("GET") | http://localhost:9090/api/persons/6/talks | GET | Person talks detail view |
+sm.HandleFunc("/api/talks", getTalks).Methods("GET") | http://localhost:9090/api/talks | GET | Get all talks view |
+sm.HandleFunc("/api/talks/{talkId:[0-9]+}/events", getEventsForOneTalk).Methods("GET") | http://localhost:9090/api/talks/1/events | GET | The Events where talk is held  |
+
 
 #### Event view
 ```
@@ -209,6 +212,72 @@ sm.HandleFunc("/api/persons/{personId:[0-9]+}/talks", getAllTalksForOnePerson).M
             }
         ],
         "RoomId": 1
+    }
+]
+```
+
+#### Talks view
+```
+[
+    {
+        "ID": 1,
+        "CreatedAt": "2020-08-18T14:11:21Z",
+        "UpdatedAt": "2020-08-18T14:11:21Z",
+        "DeletedAt": null,
+        "TitleName": "CKAD - Kubernetes Development",
+        "StartDate": "2021-02-12T12:00:00Z",
+        "EndDate": "2021-02-12T13:00:00Z",
+        "People": [
+            {
+                "ID": 5,
+                "CreatedAt": "2020-08-18T14:11:21Z",
+                "UpdatedAt": "2020-08-18T14:11:21Z",
+                "DeletedAt": null,
+                "PersonName": "Goran Grujic"
+            },
+            {
+                "ID": 6,
+                "CreatedAt": "2020-08-18T14:11:21Z",
+                "UpdatedAt": "2020-08-18T14:11:21Z",
+                "DeletedAt": null,
+                "PersonName": "Zoran Zuric"
+            }
+        ],
+        "Level": "Junior",
+        "Topics": [
+            {
+                "ID": 1,
+                "CreatedAt": "2020-08-18T14:11:21Z",
+                "UpdatedAt": "2020-08-18T14:11:21Z",
+                "DeletedAt": null,
+                "TopicName": "Kubernetes",
+                "Children": null
+            },
+            {
+                "ID": 2,
+                "CreatedAt": "2020-08-18T14:11:21Z",
+                "UpdatedAt": "2020-08-18T14:11:21Z",
+                "DeletedAt": null,
+                "TopicName": "Exam",
+                "Children": null
+            }
+        ],
+        "RoomId": 1
+    }
+]
+```
+
+#### Events where talk is held
+```
+[
+    {
+        "EventName": "Event in Belgrade",
+        "StartDate": "2021-02-12T00:00:00Z",
+        "EndDate": "2021-02-15T00:00:00Z",
+        "LocationName": "Beograd",
+        "RoomName": "Hawaii",
+        "TitleName": "CKAD - Kubernetes Development",
+        "TopicName": ""
     }
 ]
 ```

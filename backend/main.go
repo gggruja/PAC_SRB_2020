@@ -118,6 +118,8 @@ func main() {
 	sm.HandleFunc("/api/events", getListOfAllEvents).Methods("GET")
 	sm.HandleFunc("/api/persons", getPersons).Methods("GET")
 	sm.HandleFunc("/api/persons/{personId:[0-9]+}/talks", getAllTalksForOnePerson).Methods("GET")
+	sm.HandleFunc("/api/talks", getTalks).Methods("GET")
+	sm.HandleFunc("/api/talks/{talkId:[0-9]+}/events", getEventsForOneTalk).Methods("GET")
 
 	// create Server
 	s := http.Server{
@@ -812,4 +814,30 @@ func getAllTalksForOnePerson(w http.ResponseWriter, r *http.Request) {
 		Find(&talks)
 
 	json.NewEncoder(w).Encode(talks)
+}
+
+
+func getEventsForOneTalk(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+
+	id, err := strconv.ParseUint(vars["talkId"], 10, 32)
+	if err != nil {
+		panic(err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	var events []EventResult
+
+	db.Table("talks").
+		Where("talks.id = ?", id).
+		Select("events.event_name, events.start_date, events.end_date, location_name, rooms.room_name, talks.title_name").
+		Joins("JOIN rooms on rooms.id = talks.room_id").
+		Joins("JOIN locations on locations.id = rooms.location_id").
+		Joins("JOIN events on locations.id = events.location_id").
+		Scan(&events)
+
+	json.NewEncoder(w).Encode(events)
 }
