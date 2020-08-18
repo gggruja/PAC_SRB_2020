@@ -120,6 +120,9 @@ func main() {
 	sm.HandleFunc("/api/persons/{personId:[0-9]+}/talks", getAllTalksForOnePerson).Methods("GET")
 	sm.HandleFunc("/api/talks", getTalks).Methods("GET")
 	sm.HandleFunc("/api/talks/{talkId:[0-9]+}/events", getEventsForOneTalk).Methods("GET")
+	sm.HandleFunc("/api/events/select-box", getEvents).Methods("GET")
+	sm.HandleFunc("/api/locations/{locationId:[0-9]+}/rooms", getAllRoomsAtLocation).Methods("GET")
+	sm.HandleFunc("/api/rooms/{roomId:[0-9]+}/talks", getAllTalksInARoom).Methods("GET")
 
 	// create Server
 	s := http.Server{
@@ -175,11 +178,11 @@ func DbInit(rw http.ResponseWriter, r *http.Request) {
 
 	db.Create(&Event{EventName: "Event in Belgrade", StartDate: time.Date(2021, time.Month(2),
 		12, 0, 0, 0, 0, time.UTC), EndDate: time.Date(2021, time.Month(2),
-			15, 0, 0, 0, 0, time.UTC), LocationId: 1})
+		15, 0, 0, 0, 0, time.UTC), LocationId: 1})
 
 	db.Create(&Event{EventName: "Event in Smederevo", StartDate: time.Date(2021, time.Month(3),
 		12, 0, 0, 0, 0, time.UTC), EndDate: time.Date(2021, time.Month(3),
-			15, 0, 0, 0, 0, time.UTC), LocationId: 2})
+		15, 0, 0, 0, 0, time.UTC), LocationId: 2})
 
 	db.Create(&Room{RoomName: "Hawaii", LocationId: 1})
 	db.Create(&Room{RoomName: "Bora Bora", LocationId: 2})
@@ -218,11 +221,11 @@ func DbInit(rw http.ResponseWriter, r *http.Request) {
 
 	db.Create(&Talk{TitleName: "CKAD - Kubernetes Development", StartDate: time.Date(2021, time.Month(2),
 		12, 12, 0, 0, 0, time.UTC), EndDate: time.Date(2021, time.Month(2),
-			12, 13, 0, 0, 0, time.UTC), LanguageId: 1, Level: "Junior", RoomId: 1, People:[]Person{personGG, personZZ}})
+		12, 13, 0, 0, 0, time.UTC), LanguageId: 1, Level: "Junior", RoomId: 1, People: []Person{personGG, personZZ}})
 
 	db.Create(&Talk{TitleName: "Event-driven microservices: what can go wrong?", StartDate: time.Date(2021, time.Month(2),
 		12, 13, 0, 0, 0, time.UTC), EndDate: time.Date(2021, time.Month(2),
-			12, 14, 0, 0, 0, time.UTC), LanguageId: 2, Level: "Junior", RoomId: 2, People:[]Person{personDK, personTB}})
+		12, 14, 0, 0, 0, time.UTC), LanguageId: 2, Level: "Junior", RoomId: 2, People: []Person{personDK, personTB}})
 
 	var childs = []Child{
 		Child{
@@ -256,7 +259,7 @@ type Room struct {
 	gorm.Model
 	RoomName   string `json:"RoomName"`
 	Talk       Talk   `gorm:"foreignkey:TalkId"`
-	LocationId uint   `json:"-"`
+	LocationId uint   `json:"LocationId"`
 }
 
 type Event struct {
@@ -264,7 +267,7 @@ type Event struct {
 	EventName  string    `json:"EventName"`
 	StartDate  time.Time `json:"StartDate"`
 	EndDate    time.Time `json:"EndDate"`
-	LocationId uint      `json:"-"`
+	LocationId uint      `json:"LocationId"`
 }
 
 type Organization struct {
@@ -276,7 +279,7 @@ type Organization struct {
 type Person struct {
 	gorm.Model
 	PersonName     string `json:"PersonName"`
-	OrganizationId uint   `json:"-"`
+	OrganizationId uint   `json:"OrganizationId"`
 }
 
 type Language struct {
@@ -290,7 +293,7 @@ type Talk struct {
 	TitleName  string    `json:"TitleName"`
 	StartDate  time.Time `json:"StartDate"`
 	EndDate    time.Time `json:"EndDate"`
-	LanguageId uint      `json:"-"`
+	LanguageId uint      `json:"LanguageId"`
 	People     []Person  `gorm:"many2many:talks_persons;"`
 	Level      string    `json:"Level"`
 	Topics     []Topic   `json:"Topics" gorm:"foreignkey:TalkId"`
@@ -300,7 +303,7 @@ type Talk struct {
 type Topic struct {
 	gorm.Model
 	TopicName string  `json:"TopicName"`
-	TalkId    uint    `json:"-"`
+	TalkId    uint    `json:"TalkId"`
 	Children  []Child `gorm:"many2many:topic_children;"`
 }
 
@@ -816,7 +819,6 @@ func getAllTalksForOnePerson(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(talks)
 }
 
-
 func getEventsForOneTalk(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
@@ -840,4 +842,51 @@ func getEventsForOneTalk(w http.ResponseWriter, r *http.Request) {
 		Scan(&events)
 
 	json.NewEncoder(w).Encode(events)
+}
+
+type RoomDayOverviewResult struct {
+	RoomId       uint
+	RoomName     string
+	StartDate    time.Time
+	EndDate      time.Time
+	LocationName string
+	TitleName    string
+	TopicName    string
+}
+
+func getAllTalksInARoom(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+
+	id, err := strconv.ParseUint(vars["roomId"], 10, 32)
+	if err != nil {
+		panic(err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	var talks []Talk
+	db.Where("talks.room_id = ?", id).Preload("People").Preload("Topics").Find(&talks)
+	json.NewEncoder(w).Encode(talks)
+}
+func getAllRoomsAtLocation(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+
+	id, err := strconv.ParseUint(vars["locationId"], 10, 32)
+	if err != nil {
+		panic(err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	var rooms []Room
+	db.Where("rooms.location_id = ?", id).Find(&rooms)
+	json.NewEncoder(w).Encode(rooms)
+
 }

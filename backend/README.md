@@ -135,6 +135,9 @@ sm.HandleFunc("/api/persons", getPersons).Methods("GET") | http://localhost:9090
 sm.HandleFunc("/api/persons/{personId:[0-9]+}/talks", getAllTalksForOnePerson).Methods("GET") | http://localhost:9090/api/persons/6/talks | GET | Person talks detail view |
 sm.HandleFunc("/api/talks", getTalks).Methods("GET") | http://localhost:9090/api/talks | GET | Get all talks view |
 sm.HandleFunc("/api/talks/{talkId:[0-9]+}/events", getEventsForOneTalk).Methods("GET") | http://localhost:9090/api/talks/1/events | GET | The Events where talk is held  |
+sm.HandleFunc("/api/events/select-box", getEvents).Methods("GET") | http://localhost:9090/api/events/select-box | GET | Get all events for selecting |
+sm.HandleFunc("/api/locations/{locationId:[0-9]+}/rooms", getAllRoomsAtLocation).Methods("GET") | http://localhost:9090/api/locations/1/rooms | GET | Get rooms per location |
+sm.HandleFunc("/api/rooms/{roomId:[0-9]+}/talks", getAllTalksInARoom).Methods("GET") | http://localhost:9090/api/rooms/1/talks | GET | Get all talks per room |
 
 
 #### Event view
@@ -281,3 +284,61 @@ sm.HandleFunc("/api/talks/{talkId:[0-9]+}/events", getEventsForOneTalk).Methods(
     }
 ]
 ```
+
+#### Get all events for selecting
+```
+[
+    {
+        "ID": 1,
+        "CreatedAt": "2020-08-18T16:02:35Z",
+        "UpdatedAt": "2020-08-18T16:02:35Z",
+        "DeletedAt": null,
+        "EventName": "Event in Belgrade",
+        "StartDate": "2021-02-12T00:00:00Z",
+        "EndDate": "2021-02-15T00:00:00Z",
+        "LocationId": 1
+    }
+]
+```
+
+#### Get all rooms at location
+```
+[
+    {
+        "ID": 1,
+        "CreatedAt": "2020-08-18T16:04:12Z",
+        "UpdatedAt": "2020-08-18T16:04:12Z",
+        "DeletedAt": null,
+        "RoomName": "Hawaii",
+        "Talk": {
+            "ID": 0,
+            "CreatedAt": "0001-01-01T00:00:00Z",
+            "UpdatedAt": "0001-01-01T00:00:00Z",
+            "DeletedAt": null,
+            "TitleName": "",
+            "StartDate": "0001-01-01T00:00:00Z",
+            "EndDate": "0001-01-01T00:00:00Z",
+            "LanguageId": 0,
+            "People": null,
+            "Level": "",
+            "Topics": null,
+            "RoomId": 0
+        },
+        "LocationId": 1
+    }
+]
+```
+
+#### Get talks per room
+```
+[
+    {
+        "EventName": "Event in Belgrade",
+        "StartDate": "2021-02-12T00:00:00Z",
+        "EndDate": "2021-02-15T00:00:00Z",
+        "LocationName": "Beograd",
+        "RoomName": "Hawaii",
+        "TitleName": "CKAD - Kubernetes Development",
+        "TopicName": ""
+    }
+]

@@ -54,11 +54,11 @@ resource "kubernetes_cron_job" "backend-init-db" {
 
   spec {
     concurrency_policy            = "Replace"
-    failed_jobs_history_limit     = 5
+    failed_jobs_history_limit     = 1
     schedule                      = "*/1 * * * *"
     starting_deadline_seconds     = 10
-    successful_jobs_history_limit = 10
-    suspend                       = true
+    successful_jobs_history_limit = 1
+    suspend                       = false
     job_template {
       metadata {
       }
