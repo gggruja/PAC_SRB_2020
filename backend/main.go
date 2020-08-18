@@ -174,17 +174,40 @@ func DbInit(rw http.ResponseWriter, r *http.Request) {
 	db.Create(&Room{RoomName: "Hawaii", LocationId: 1})
 	db.Create(&Room{RoomName: "Bora Bora", LocationId: 2})
 
-	db.Create(&Organization{OrganizationName: "PRODYNA"})
+	db.Create(&Organization{OrganizationName: "PRODYNA d.o.o"})
+	db.Create(&Organization{OrganizationName: "PRODYNA SE"})
 
-	db.Create(&Person{PersonName: "Goran Grujic", OrganizationId: 1, TalkId: 1})
-	db.Create(&Person{PersonName: "Zoran Zuric", OrganizationId: 1, TalkId: 2})
+	personGG := Person{
+		PersonName:     "Goran Grujic",
+		OrganizationId: 1,
+	}
+
+	personZZ := Person{
+		PersonName:     "Zoran Zuric",
+		OrganizationId: 1,
+	}
+
+	personTB := Person{
+		PersonName:     "Torben Bock",
+		OrganizationId: 2,
+	}
+
+	personDK := Person{
+		PersonName:     "Darko Krizic",
+		OrganizationId: 2,
+	}
+
+	db.Create(personGG)
+	db.Create(personZZ)
+	db.Create(personTB)
+	db.Create(personDK)
 
 	db.Create(&Language{LanguageName: "Serbian"})
 	db.Create(&Language{LanguageName: "English"})
 	db.Create(&Language{LanguageName: "German"})
 
-	db.Create(&Talk{TitleName: "CKAD - Kubernetes Development", StartDate: time.Date(2021, time.Month(2), 12, 12, 0, 0, 0, time.UTC), EndDate: time.Date(2021, time.Month(2), 12, 13, 0, 0, 0, time.UTC), LanguageId: 1, Level: "Junior", RoomId: 1})
-	db.Create(&Talk{TitleName: "Event-driven microservices: what can go wrong?", StartDate: time.Date(2021, time.Month(2), 12, 13, 0, 0, 0, time.UTC), EndDate: time.Date(2021, time.Month(2), 12, 14, 0, 0, 0, time.UTC), LanguageId: 2, Level: "Junior", RoomId: 2})
+	db.Create(&Talk{TitleName: "CKAD - Kubernetes Development", StartDate: time.Date(2021, time.Month(2), 12, 12, 0, 0, 0, time.UTC), EndDate: time.Date(2021, time.Month(2), 12, 13, 0, 0, 0, time.UTC), LanguageId: 1, Level: "Junior", RoomId: 1, People:[]Person{personGG, personZZ}})
+	db.Create(&Talk{TitleName: "Event-driven microservices: what can go wrong?", StartDate: time.Date(2021, time.Month(2), 12, 13, 0, 0, 0, time.UTC), EndDate: time.Date(2021, time.Month(2), 12, 14, 0, 0, 0, time.UTC), LanguageId: 2, Level: "Junior", RoomId: 2, People:[]Person{personDK, personTB}})
 
 	var childs = []Child{
 		Child{
@@ -239,7 +262,6 @@ type Person struct {
 	gorm.Model
 	PersonName     string `json:"PersonName"`
 	OrganizationId uint   `json:"-"`
-	TalkId         uint   `json:"TalkId"`
 }
 
 type Language struct {
@@ -254,7 +276,7 @@ type Talk struct {
 	StartDate  time.Time `json:"StartDate"`
 	EndDate    time.Time `json:"EndDate"`
 	LanguageId uint      `json:"-"`
-	People     []Person  `json:"People" gorm:"foreignkey:TalkId"`
+	People     []Person  `gorm:"many2many:talks_persons;"`
 	Level      string    `json:"Level"`
 	Topics     []Topic   `json:"Topics" gorm:"foreignkey:TalkId"`
 	RoomId     uint      `json:"RoomId"`
