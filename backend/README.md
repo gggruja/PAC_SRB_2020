@@ -20,7 +20,7 @@ type Room struct {
 	gorm.Model
 	RoomName   string `json:"RoomName"`
 	Talk       Talk   `gorm:"foreignkey:TalkId"`
-	LocationId uint   `json:"-"`
+	LocationId uint   `json:"LocationId"`
 }
 
 type Event struct {
@@ -28,7 +28,7 @@ type Event struct {
 	EventName  string    `json:"EventName"`
 	StartDate  time.Time `json:"StartDate"`
 	EndDate    time.Time `json:"EndDate"`
-	LocationId uint      `json:"-"`
+	LocationId uint      `json:"LocationId"`
 }
 
 type Organization struct {
@@ -40,8 +40,7 @@ type Organization struct {
 type Person struct {
 	gorm.Model
 	PersonName     string `json:"PersonName"`
-	OrganizationId uint   `json:"-"`
-	TalkId         uint   `json:"TalkId"`
+	OrganizationId uint   `json:"OrganizationId"`
 }
 
 type Language struct {
@@ -55,8 +54,8 @@ type Talk struct {
 	TitleName  string    `json:"TitleName"`
 	StartDate  time.Time `json:"StartDate"`
 	EndDate    time.Time `json:"EndDate"`
-	LanguageId uint      `json:"-"`
-	People     []Person  `json:"People" gorm:"foreignkey:TalkId"`
+	LanguageId uint      `json:"LanguageId"`
+	People     []Person  `gorm:"many2many:talks_persons;"`
 	Level      string    `json:"Level"`
 	Topics     []Topic   `json:"Topics" gorm:"foreignkey:TalkId"`
 	RoomId     uint      `json:"RoomId"`
@@ -64,10 +63,9 @@ type Talk struct {
 
 type Topic struct {
 	gorm.Model
-	TopicName string   `json:"TopicName"`
-	TalkId    uint     `json:"-"`
-	Children  []Child  `gorm:"many2many:topic_children;"`
-	Parents   []Parent `gorm:"many2many:topic_parents;"`
+	TopicName string  `json:"TopicName"`
+	TalkId    uint    `json:"TalkId"`
+	Children  []Child `gorm:"many2many:topic_children;"`
 }
 
 type Child struct {
