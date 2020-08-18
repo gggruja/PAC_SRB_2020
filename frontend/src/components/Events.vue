@@ -1,6 +1,5 @@
 <template>
     <div>
-        <h1>Conference APP</h1>
         <button v-on:click="getEvents">Get Events</button>
         <table style="width:100%">
             <thead>

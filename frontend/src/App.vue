@@ -1,8 +1,10 @@
 <template>
     <div id="app">
+        <h1>Conference APP</h1>
         <Events>
 
         </Events>
+
     </div>
 </template>
 
