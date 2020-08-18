@@ -115,6 +115,8 @@ func main() {
 
 	// VIEW API's
 	sm.HandleFunc("/api/events", getListOfAllEvents).Methods("GET")
+	sm.HandleFunc("/api/persons", getPersons).Methods("GET")
+	sm.HandleFunc("/api/persons/{personId:[0-9]+}/talks", getAllTalksForOnePerson).Methods("GET")
 
 	// create Server
 	s := http.Server{
@@ -732,10 +734,10 @@ func getOrganization(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	params := mux.Vars(r)
-	inputPersonId := params["personId"]
+	inputOrganizationId := params["organizationId"]
 
 	var organization Organization
-	db.Preload("People").First(&organization, inputPersonId)
+	db.Preload("People").First(&organization, inputOrganizationId)
 	json.NewEncoder(w).Encode(organization)
 
 }
@@ -767,7 +769,36 @@ func getListOfAllEvents(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	var events []EventResult
-	db.Table("locations").Select("events.event_name, events.start_date, events.end_date, location_name, rooms.room_name, talks.title_name, topics.topic_name").Joins("JOIN rooms on locations.id = rooms.location_id").Joins("JOIN events on locations.id = events.location_id").Joins("JOIN talks on rooms.id = talks.room_id").Joins("JOIN topics on talks.id = topics.talk_id").Scan(&events)
+
+	db.Table("locations").
+		Select("events.event_name, events.start_date, events.end_date, location_name, rooms.room_name, talks.title_name, topics.topic_name").
+		Joins("JOIN rooms on locations.id = rooms.location_id").
+		Joins("JOIN events on locations.id = events.location_id").
+		Joins("JOIN talks on rooms.id = talks.room_id").
+		Joins("JOIN topics on talks.id = topics.talk_id").Scan(&events)
+
 	json.NewEncoder(w).Encode(events)
 
+}
+
+func getAllTalksForOnePerson(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+
+	id, err := strconv.ParseUint(vars["personId"], 10, 32)
+	if err != nil {
+		panic(err)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	var talks []*Talk
+
+	db.Preload("People").
+		Preload("Topics").
+		Where("id IN (?)", db.Table("talks_persons").Select("talk_id").Where("person_id = ?", id).SubQuery()).
+		Find(&talks)
+
+	json.NewEncoder(w).Encode(talks)
 }

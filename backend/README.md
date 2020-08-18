@@ -131,6 +131,8 @@ sm.HandleFunc("/talks/{talkId:[0-9]+}", deleteTalk).Methods("DELETE") | http://l
 Code | REST API | METHOD | COMMENT |
 --- | --- | --- | --- |
 sm.HandleFunc("/api/events", getListOfAllEvents).Methods("GET") | http://localhost:9090/api/events | GET | Event view | 
+sm.HandleFunc("/api/persons", getPersons).Methods("GET") | http://localhost:9090/api/persons | GET | Person view | 
+sm.HandleFunc("/api/persons/{personId:[0-9]+}/talks", getAllTalksForOnePerson).Methods("GET") | http://localhost:9090/api/persons/6/talks | GET | Person talks detail view |
 
 #### Event view
 ```
@@ -143,6 +145,70 @@ sm.HandleFunc("/api/events", getListOfAllEvents).Methods("GET") | http://localho
         "RoomName": "Hawaii",
         "TitleName": "CKAD - Kubernetes Development",
         "TopicName": "Kubernetes"
+    }
+]
+```
+
+#### Person view
+```
+[
+    {
+        "ID": 5,
+        "CreatedAt": "2020-08-18T12:32:41Z",
+        "UpdatedAt": "2020-08-18T12:32:41Z",
+        "DeletedAt": null,
+        "PersonName": "Goran Grujic"
+    }
+]
+```
+
+#### Person talks view
+```
+[
+    {
+        "ID": 1,
+        "CreatedAt": "2020-08-18T12:32:41Z",
+        "UpdatedAt": "2020-08-18T12:32:41Z",
+        "DeletedAt": null,
+        "TitleName": "CKAD - Kubernetes Development",
+        "StartDate": "2021-02-12T12:00:00Z",
+        "EndDate": "2021-02-12T13:00:00Z",
+        "People": [
+            {
+                "ID": 5,
+                "CreatedAt": "2020-08-18T12:32:41Z",
+                "UpdatedAt": "2020-08-18T12:32:41Z",
+                "DeletedAt": null,
+                "PersonName": "Goran Grujic"
+            },
+            {
+                "ID": 6,
+                "CreatedAt": "2020-08-18T12:32:41Z",
+                "UpdatedAt": "2020-08-18T12:32:41Z",
+                "DeletedAt": null,
+                "PersonName": "Zoran Zuric"
+            }
+        ],
+        "Level": "Junior",
+        "Topics": [
+            {
+                "ID": 1,
+                "CreatedAt": "2020-08-18T12:32:41Z",
+                "UpdatedAt": "2020-08-18T12:32:41Z",
+                "DeletedAt": null,
+                "TopicName": "Kubernetes",
+                "Children": null
+            },
+            {
+                "ID": 2,
+                "CreatedAt": "2020-08-18T12:32:41Z",
+                "UpdatedAt": "2020-08-18T12:32:41Z",
+                "DeletedAt": null,
+                "TopicName": "Exam",
+                "Children": null
+            }
+        ],
+        "RoomId": 1
     }
 ]
 ```
