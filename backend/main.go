@@ -67,10 +67,51 @@ func main() {
 	// Locations
 	sm.HandleFunc("/locations", createLocations).Methods("POST")
 	sm.HandleFunc("/locations", getLocations).Methods("GET")
-	sm.HandleFunc("/locations/{locationId}", getLocation).Methods("GET")
-	sm.HandleFunc("/locations/{locationId}", updateLocation).Methods("PUT")
-	sm.HandleFunc("/locations/{locationId}", deleteLocation).Methods("DELETE")
-	//todo rest crud api's
+	sm.HandleFunc("/locations/{locationId:[0-9]+}", getLocation).Methods("GET")
+	sm.HandleFunc("/locations/{locationId:[0-9]+}", updateLocation).Methods("PUT")
+	sm.HandleFunc("/locations/{locationId:[0-9]+}", deleteLocation).Methods("DELETE")
+
+	// Events
+	sm.HandleFunc("/events", getEvents).Methods("GET")
+	sm.HandleFunc("/events/{eventId:[0-9]+}", getEvent).Methods("GET")
+	sm.HandleFunc("/events", createEvent).Methods("POST")
+	sm.HandleFunc("/events/{eventId:[0-9]+}", updateEvent).Methods("PUT")
+	sm.HandleFunc("/events/{eventId:[0-9]+}", deleteEvent).Methods("DELETE")
+
+	// Organizations
+	sm.HandleFunc("/organizations", getOrganizations).Methods("GET")
+	sm.HandleFunc("/organizations/{organizationId:[0-9]+}", getOrganization).Methods("GET")
+	sm.HandleFunc("/organizations", createOrganization).Methods("POST")
+	sm.HandleFunc("/organizations/{organizationId:[0-9]+}", updateOrganization).Methods("PUT")
+	sm.HandleFunc("/organizations/{organizationId:[0-9]+}", deleteOrganization).Methods("DELETE")
+
+	// Persons
+	sm.HandleFunc("/persons", getPersons).Methods("GET")
+	sm.HandleFunc("/persons/{personId:[0-9]+}", getPerson).Methods("GET")
+	sm.HandleFunc("/persons", createPerson).Methods("POST")
+	sm.HandleFunc("/persons/{personId:[0-9]+}", updatePerson).Methods("PUT")
+	sm.HandleFunc("/persons/{personId:[0-9]+}", deletePerson).Methods("DELETE")
+
+	// Rooms
+	sm.HandleFunc("/rooms", getRooms).Methods("GET")
+	sm.HandleFunc("/rooms/{roomId:[0-9]+}", getRoom).Methods("GET")
+	sm.HandleFunc("/rooms", createRoom).Methods("POST")
+	sm.HandleFunc("/rooms/{roomId:[0-9]+}", updateRoom).Methods("PUT")
+	sm.HandleFunc("/rooms/{roomId:[0-9]+}", deleteRoom).Methods("DELETE")
+
+	// Topics
+	sm.HandleFunc("/topics", getTopics).Methods("GET")
+	sm.HandleFunc("/topics/{topicId:[0-9]+}", getTopic).Methods("GET")
+	sm.HandleFunc("/topics", createTopic).Methods("POST")
+	sm.HandleFunc("/topics/{topicId:[0-9]+}", updateTopic).Methods("PUT")
+	sm.HandleFunc("/topics/{topicId:[0-9]+}", deleteTopic).Methods("DELETE")
+
+	// Talks
+	sm.HandleFunc("/talks", getTalks).Methods("GET")
+	sm.HandleFunc("/talks/{talkId:[0-9]+}", getTalk).Methods("GET")
+	sm.HandleFunc("/talks", createTalk).Methods("POST")
+	sm.HandleFunc("/talks/{talkId:[0-9]+}", updateTalk).Methods("PUT")
+	sm.HandleFunc("/talks/{talkId:[0-9]+}", deleteTalk).Methods("DELETE")
 
 	// VIEW API's
 	sm.HandleFunc("/api/events", getListOfAllEvents).Methods("GET")
@@ -117,18 +158,18 @@ func DbInit(rw http.ResponseWriter, r *http.Request) {
 
 	// Drop
 	db.DropTable(&Location{}, &Event{}, &Organization{}, &Person{}, &Room{},
-		&Language{}, &Talk{}, &Topic{}, &Child{}, &Parent{})
+		&Language{}, &Talk{}, &Topic{}, &Child{})
 
 	// Create new one
 	db.AutoMigrate(&Location{}, &Event{}, &Organization{}, &Person{}, &Room{},
-		&Language{}, &Talk{}, &Topic{}, &Child{}, &Parent{})
+		&Language{}, &Talk{}, &Topic{}, &Child{})
 
 	// Create records
 	db.Create(&Location{LocationName: "Beograd"})
 	db.Create(&Location{LocationName: "Smederevo"})
 
-	db.Create(&Event{EventName: "Event in Belgrade", StartDate: time.Now(), EndDate: time.Now(), LocationId: 1})
-	db.Create(&Event{EventName: "Event in Smederevo", StartDate: time.Now(), EndDate: time.Now(), LocationId: 2})
+	db.Create(&Event{EventName: "Event in Belgrade", StartDate: time.Date(2021, time.Month(2), 12, 0, 0, 0, 0, time.UTC), EndDate: time.Date(2021, time.Month(2), 15, 0, 0, 0, 0, time.UTC), LocationId: 1})
+	db.Create(&Event{EventName: "Event in Smederevo", StartDate: time.Date(2021, time.Month(3), 12, 0, 0, 0, 0, time.UTC), EndDate: time.Date(2021, time.Month(3), 15, 0, 0, 0, 0, time.UTC), LocationId: 2})
 
 	db.Create(&Room{RoomName: "Hawaii", LocationId: 1})
 	db.Create(&Room{RoomName: "Bora Bora", LocationId: 2})
@@ -142,8 +183,8 @@ func DbInit(rw http.ResponseWriter, r *http.Request) {
 	db.Create(&Language{LanguageName: "English"})
 	db.Create(&Language{LanguageName: "German"})
 
-	db.Create(&Talk{TitleName: "CKAD - Kubernetes Development", StartDate: time.Now(), EndDate: time.Now(), LanguageId: 1, Level: "Junior", RoomId: 1})
-	db.Create(&Talk{TitleName: "Event-driven microservices: what can go wrong?", StartDate: time.Now(), EndDate: time.Now(), LanguageId: 2, Level: "Junior", RoomId: 2})
+	db.Create(&Talk{TitleName: "CKAD - Kubernetes Development", StartDate: time.Date(2021, time.Month(2), 12, 12, 0, 0, 0, time.UTC), EndDate: time.Date(2021, time.Month(2), 12, 13, 0, 0, 0, time.UTC), LanguageId: 1, Level: "Junior", RoomId: 1})
+	db.Create(&Talk{TitleName: "Event-driven microservices: what can go wrong?", StartDate: time.Date(2021, time.Month(2), 12, 13, 0, 0, 0, time.UTC), EndDate: time.Date(2021, time.Month(2), 12, 14, 0, 0, 0, time.UTC), LanguageId: 2, Level: "Junior", RoomId: 2})
 
 	var childs = []Child{
 		Child{
@@ -154,16 +195,7 @@ func DbInit(rw http.ResponseWriter, r *http.Request) {
 		},
 	}
 
-	var parents = []Parent{
-		Parent{
-			TopicName: "Kubernetes Parent 1",
-		},
-		Parent{
-			TopicName: "Kubernetes Parent 2",
-		},
-	}
-
-	db.Create(&Topic{TopicName: "Kubernetes", TalkId: 1, Children: childs, Parents: parents})
+	db.Create(&Topic{TopicName: "Kubernetes", TalkId: 1, Children: childs})
 	db.Create(&Topic{TopicName: "Exam", TalkId: 1})
 	db.Create(&Topic{TopicName: "Event-driven microservices", TalkId: 2})
 	db.Create(&Topic{TopicName: "Microservices", TalkId: 2})
@@ -230,18 +262,12 @@ type Talk struct {
 
 type Topic struct {
 	gorm.Model
-	TopicName string   `json:"TopicName"`
-	TalkId    uint     `json:"-"`
-	Children  []Child  `gorm:"many2many:topic_children;"`
-	Parents   []Parent `gorm:"many2many:topic_parents;"`
+	TopicName string  `json:"TopicName"`
+	TalkId    uint    `json:"-"`
+	Children  []Child `gorm:"many2many:topic_children;"`
 }
 
 type Child struct {
-	gorm.Model
-	TopicName string `json:"TopicName"`
-}
-
-type Parent struct {
 	gorm.Model
 	TopicName string `json:"TopicName"`
 }
@@ -279,7 +305,7 @@ func getLocation(w http.ResponseWriter, r *http.Request) {
 	inputLocationId := params["locationId"]
 
 	var location Location
-	db.Preload("Events").First(&location, inputLocationId)
+	db.Preload("Events").Preload("Rooms").First(&location, inputLocationId)
 	json.NewEncoder(w).Encode(location)
 
 }
@@ -307,6 +333,402 @@ func createLocations(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func getEvents(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	var events []Event
+	db.Find(&events)
+	json.NewEncoder(w).Encode(events)
+
+}
+
+func getEvent(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	params := mux.Vars(r)
+	inputEventId := params["eventId"]
+
+	var event Event
+	db.First(&event, inputEventId)
+	json.NewEncoder(w).Encode(event)
+}
+
+func deleteEvent(w http.ResponseWriter, r *http.Request) {
+
+	params := mux.Vars(r)
+
+	inputEventId := params["eventId"]
+
+	id64, _ := strconv.ParseUint(inputEventId, 10, 64)
+	idToDelete := uint(id64)
+
+	db.Where("id = ?", idToDelete).Delete(&Event{})
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func updateEvent(w http.ResponseWriter, r *http.Request) {
+
+	var updatedEvent Event
+
+	json.NewDecoder(r.Body).Decode(&updatedEvent)
+	db.Save(&updatedEvent)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	json.NewEncoder(w).Encode(updatedEvent)
+
+}
+
+func createEvent(w http.ResponseWriter, r *http.Request) {
+
+	var event Event
+	json.NewDecoder(r.Body).Decode(&event)
+
+	db.Create(&event)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	json.NewEncoder(w).Encode(event)
+}
+
+func deleteTalk(w http.ResponseWriter, r *http.Request) {
+
+	params := mux.Vars(r)
+
+	inputTalkId := params["talkId"]
+
+	id64, _ := strconv.ParseUint(inputTalkId, 10, 64)
+	idToDelete := uint(id64)
+
+	db.Where("id = ?", idToDelete).Delete(&Talk{})
+
+	w.WriteHeader(http.StatusNoContent)
+
+}
+
+func updateTalk(w http.ResponseWriter, r *http.Request) {
+
+	var updatedTalk Talk
+
+	json.NewDecoder(r.Body).Decode(&updatedTalk)
+	db.Save(&updatedTalk)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	json.NewEncoder(w).Encode(updatedTalk)
+
+}
+
+func createTalk(w http.ResponseWriter, r *http.Request) {
+
+	var talk Talk
+	json.NewDecoder(r.Body).Decode(&talk)
+
+	db.Create(&talk)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	json.NewEncoder(w).Encode(talk)
+
+}
+
+func getTalk(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	params := mux.Vars(r)
+	inputTalkId := params["talkId"]
+
+	var talk Talk
+	db.Preload("People").Preload("Topics").First(&talk, inputTalkId)
+	json.NewEncoder(w).Encode(talk)
+
+}
+
+func getTalks(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	var talks []Talk
+	db.Preload("People").Preload("Topics").Find(&talks)
+	json.NewEncoder(w).Encode(talks)
+
+}
+
+func deleteTopic(w http.ResponseWriter, r *http.Request) {
+
+	params := mux.Vars(r)
+
+	inputTopicId := params["topicId"]
+
+	id64, _ := strconv.ParseUint(inputTopicId, 10, 64)
+	idToDelete := uint(id64)
+
+	db.Where("id = ?", idToDelete).Delete(&Topic{})
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func updateTopic(w http.ResponseWriter, r *http.Request) {
+
+	var updatedTopic Topic
+
+	json.NewDecoder(r.Body).Decode(&updatedTopic)
+	db.Save(&updatedTopic)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	json.NewEncoder(w).Encode(updatedTopic)
+}
+
+func createTopic(w http.ResponseWriter, r *http.Request) {
+
+	var topic Topic
+	json.NewDecoder(r.Body).Decode(&topic)
+
+	db.Create(&topic)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	json.NewEncoder(w).Encode(topic)
+
+}
+
+func getTopic(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	params := mux.Vars(r)
+	inputTopicId := params["topicId"]
+
+	var topic Topic
+	db.Preload("Children").First(&topic, inputTopicId)
+	json.NewEncoder(w).Encode(topic)
+
+}
+
+func getTopics(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	var topics []Topic
+	db.Preload("Children").Find(&topics)
+	json.NewEncoder(w).Encode(topics)
+
+}
+
+func deleteRoom(w http.ResponseWriter, r *http.Request) {
+
+	params := mux.Vars(r)
+
+	inputRoomId := params["roomId"]
+
+	id64, _ := strconv.ParseUint(inputRoomId, 10, 64)
+	idToDelete := uint(id64)
+
+	db.Where("id = ?", idToDelete).Delete(&Room{})
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func updateRoom(w http.ResponseWriter, r *http.Request) {
+
+	var updatedRoom Room
+
+	json.NewDecoder(r.Body).Decode(&updatedRoom)
+	db.Save(&updatedRoom)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	json.NewEncoder(w).Encode(updatedRoom)
+
+}
+
+func createRoom(w http.ResponseWriter, r *http.Request) {
+
+	var room Room
+	json.NewDecoder(r.Body).Decode(&room)
+
+	db.Create(&room)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	json.NewEncoder(w).Encode(room)
+
+}
+
+func getRoom(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	params := mux.Vars(r)
+	inputRoomId := params["roomId"]
+
+	var room Room
+	db.Preload("Talk").First(&room, inputRoomId)
+	json.NewEncoder(w).Encode(room)
+
+}
+
+func getRooms(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	var rooms []Room
+	db.Preload("Talk").Find(&rooms)
+	json.NewEncoder(w).Encode(rooms)
+
+}
+
+func deletePerson(w http.ResponseWriter, r *http.Request) {
+
+	params := mux.Vars(r)
+
+	inputPersonId := params["personId"]
+
+	id64, _ := strconv.ParseUint(inputPersonId, 10, 64)
+	idToDelete := uint(id64)
+
+	db.Where("id = ?", idToDelete).Delete(&Person{})
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+func updatePerson(w http.ResponseWriter, r *http.Request) {
+
+	var updatedPeston Person
+
+	json.NewDecoder(r.Body).Decode(&updatedPeston)
+	db.Save(&updatedPeston)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	json.NewEncoder(w).Encode(updatedPeston)
+
+}
+
+func createPerson(w http.ResponseWriter, r *http.Request) {
+
+	var person Person
+	json.NewDecoder(r.Body).Decode(&person)
+
+	db.Create(&person)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	json.NewEncoder(w).Encode(person)
+
+}
+
+func getPerson(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	params := mux.Vars(r)
+	inputPersonId := params["personId"]
+
+	var person Person
+	db.First(&person, inputPersonId)
+	json.NewEncoder(w).Encode(person)
+
+}
+
+func getPersons(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	var people []Person
+	db.Find(&people)
+	json.NewEncoder(w).Encode(people)
+
+}
+
+func deleteOrganization(w http.ResponseWriter, r *http.Request) {
+
+	params := mux.Vars(r)
+
+	inputOrganizationId := params["organizationId"]
+
+	id64, _ := strconv.ParseUint(inputOrganizationId, 10, 64)
+	idToDelete := uint(id64)
+
+	db.Where("id = ?", idToDelete).Delete(&Organization{})
+
+	w.WriteHeader(http.StatusNoContent)
+
+}
+
+func updateOrganization(w http.ResponseWriter, r *http.Request) {
+
+	var updatedOrganization Organization
+
+	json.NewDecoder(r.Body).Decode(&updatedOrganization)
+	db.Save(&updatedOrganization)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	json.NewEncoder(w).Encode(updatedOrganization)
+
+}
+
+func createOrganization(w http.ResponseWriter, r *http.Request) {
+
+	var organization Organization
+	json.NewDecoder(r.Body).Decode(&organization)
+
+	db.Create(&organization)
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	json.NewEncoder(w).Encode(organization)
+
+}
+
+func getOrganization(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+	params := mux.Vars(r)
+	inputPersonId := params["personId"]
+
+	var organization Organization
+	db.Preload("People").First(&organization, inputPersonId)
+	json.NewEncoder(w).Encode(organization)
+
+}
+
+func getOrganizations(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	var organization []Organization
+	db.Preload("People").Find(&organization)
+	json.NewEncoder(w).Encode(organization)
+
+}
+
 type EventResult struct {
 	EventName    string
 	StartDate    time.Time
@@ -322,7 +744,7 @@ func getListOfAllEvents(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	var events [] EventResult
+	var events []EventResult
 	db.Table("locations").Select("events.event_name, events.start_date, events.end_date, location_name, rooms.room_name, talks.title_name, topics.topic_name").Joins("JOIN rooms on locations.id = rooms.location_id").Joins("JOIN events on locations.id = events.location_id").Joins("JOIN talks on rooms.id = talks.room_id").Joins("JOIN topics on talks.id = topics.talk_id").Scan(&events)
 	json.NewEncoder(w).Encode(events)
 

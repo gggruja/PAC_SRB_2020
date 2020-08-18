@@ -75,11 +75,9 @@ type Child struct {
 	TopicName string `json:"TopicName"`
 }
 
-type Parent struct {
-	gorm.Model
-	TopicName string `json:"TopicName"`
-}
 ```
+
+Note: If you run it in minikube BASE_URL is http://conference.backend/*********
 
 ### SETTINGS API's
 Code | REST API | METHOD | COMMENT |
@@ -87,6 +85,47 @@ Code | REST API | METHOD | COMMENT |
 sm.HandleFunc("/", healthChecking) | http://localhost:9090/ | GET | Health checking for Kubernetes probes | 
 sm.Handle("/metrics", promhttp.Handler()) | http://localhost:9090/metrics | GET | Metrics scraper API, for prometheus | 
 sm.HandleFunc("/init", DbInit).Methods("GET") | http://localhost:9090/init | GET | Database initialization, run by kubernetes job | 
+
+### CRUD REST API's
+
+Code | REST API | METHOD | COMMENT |
+--- | --- | --- | --- |
+sm.HandleFunc("/locations", createLocations).Methods("POST") | http://localhost:9090/locations | POST |  | 
+sm.HandleFunc("/locations", getLocations).Methods("GET") | http://localhost:9090/locations | GET |  | 
+sm.HandleFunc("/locations/{locationId:[0-9]+}", getLocation).Methods("GET") | http://localhost:9090/locations/1 | GET |  | 
+sm.HandleFunc("/locations/{locationId:[0-9]+}", updateLocation).Methods("PUT") | http://localhost:9090/locations/1 | PUT |  | 
+sm.HandleFunc("/locations/{locationId:[0-9]+}", deleteLocation).Methods("DELETE") | http://localhost:9090/locations/1 | DELETE |  | 
+sm.HandleFunc("/events", getEvents).Methods("GET") | http://localhost:9090/events | GET |  | 
+sm.HandleFunc("/events/{eventId:[0-9]+}", getEvent).Methods("GET") | http://localhost:9090/events/1 | GET |  | 
+sm.HandleFunc("/events", createEvent).Methods("POST") | http://localhost:9090/events | POST |  | 
+sm.HandleFunc("/events/{eventId:[0-9]+}", updateEvent).Methods("PUT") | http://localhost:9090/events/1 | PUT |  | 
+sm.HandleFunc("/events/{eventId:[0-9]+}", deleteEvent).Methods("DELETE") | http://localhost:9090/events/1 | DELETE |  | 
+sm.HandleFunc("/organizations", getOrganizations).Methods("GET") | http://localhost:9090/organizations | GET |  | 
+sm.HandleFunc("/organizations/{organizationId:[0-9]+}", getOrganization).Methods("GET") | http://localhost:9090/organizations/1 | GET |  | 
+sm.HandleFunc("/organizations", createOrganization).Methods("POST") | http://localhost:9090/organizations | POST |  | 
+sm.HandleFunc("/organizations/{organizationId:[0-9]+}", updateOrganization).Methods("PUT") | http://localhost:9090/organizations/1 | PUT |  | 
+sm.HandleFunc("/organizations/{organizationId:[0-9]+}", deleteOrganization).Methods("DELETE") | http://localhost:9090/organizations/1 | DELETE |  | 
+sm.HandleFunc("/persons", getPersons).Methods("GET") | http://localhost:9090/persons | GET |  | 
+sm.HandleFunc("/persons/{personId:[0-9]+}", getPerson).Methods("GET") | http://localhost:9090/persons/1 | GET |  | 
+sm.HandleFunc("/persons", createPerson).Methods("POST") | http://localhost:9090/persons | POST |  | 
+sm.HandleFunc("/persons/{personId:[0-9]+}", updatePerson).Methods("PUT") | http://localhost:9090/persons/1 | PUT |  | 
+sm.HandleFunc("/persons/{personId:[0-9]+}", deletePerson).Methods("DELETE") | http://localhost:9090/persons/1 | DELETE |  | 
+sm.HandleFunc("/rooms", getRooms).Methods("GET") | http://localhost:9090/rooms | GET |  | 
+sm.HandleFunc("/rooms/{roomId:[0-9]+}", getRoom).Methods("GET") | http://localhost:9090/rooms/1 | GET |  | 
+sm.HandleFunc("/rooms", createRoom).Methods("POST") | http://localhost:9090/rooms | POST |  | 
+sm.HandleFunc("/rooms/{roomId:[0-9]+}", updateRoom).Methods("PUT") | http://localhost:9090/rooms/1 | PUT |  | 
+sm.HandleFunc("/rooms/{roomId:[0-9]+}", deleteRoom).Methods("DELETE") | http://localhost:9090/rooms/1 | DELETE |  | 
+sm.HandleFunc("/topics", getTopics).Methods("GET") | http://localhost:9090/topics | GET |  | 
+sm.HandleFunc("/topics/{topicId:[0-9]+}", getTopic).Methods("GET") | http://localhost:9090/topics/1 | GET |  | 
+sm.HandleFunc("/topics", createTopic).Methods("POST") | http://localhost:9090/topics | POST |  | 
+sm.HandleFunc("/topics/{topicId:[0-9]+}", updateTopic).Methods("PUT") | http://localhost:9090/topics/1 | PUT |  | 
+sm.HandleFunc("/topics/{topicId:[0-9]+}", deleteTopic).Methods("DELETE") | http://localhost:9090/topics/1 | DELETE |  | 
+sm.HandleFunc("/talks", getTalks).Methods("GET") | http://localhost:9090/talks | GET |  | 
+sm.HandleFunc("/talks/{talkId:[0-9]+}", getTalk).Methods("GET") | http://localhost:9090/talks/1 | GET |  | 
+sm.HandleFunc("/talks", createTalk).Methods("POST") | http://localhost:9090/talks | POST |  | 
+sm.HandleFunc("/talks/{talkId:[0-9]+}", updateTalk).Methods("PUT") | http://localhost:9090/talks/1 | PUT |  | 
+sm.HandleFunc("/talks/{talkId:[0-9]+}", deleteTalk).Methods("DELETE") | http://localhost:9090/talks/1 | DELETE |  | 
+
 
 ### VIEW API's
 Code | REST API | METHOD | COMMENT |
@@ -104,197 +143,6 @@ sm.HandleFunc("/api/events", getListOfAllEvents).Methods("GET") | http://localho
         "RoomName": "Hawaii",
         "TitleName": "CKAD - Kubernetes Development",
         "TopicName": "Kubernetes"
-    }
-]
-```
-
-### CRUD REST API's
-Code | REST API | METHOD | COMMENT |
---- | --- | --- | --- |
-sm.HandleFunc("/locations", createLocations).Methods("POST") | http://localhost:9090/locations | POST |  | 
-sm.HandleFunc("/locations", getLocations).Methods("GET") | http://localhost:9090/locations | GET |  | 
-sm.HandleFunc("/locations/{locationId}", getLocation).Methods("GET") | http://localhost:9090/locations/1 | GET |  | 
-sm.HandleFunc("/locations/{locationId}", updateLocation).Methods("PUT") | http://localhost:9090/locations/1 | PUT |  | 
-sm.HandleFunc("/locations/{locationId}", deleteLocation).Methods("DELETE") | http://localhost:9090/locations/1 | DELETE |  | 
-
-
-#### GET ALL locations and there event
-```
-[
-    {
-        "ID": 1,
-        "CreatedAt": "2020-08-04T14:13:13Z",
-        "UpdatedAt": "2020-08-04T14:13:13Z",
-        "DeletedAt": null,
-        "LocationName": "Beograd",
-        "Events": [
-            {
-                "ID": 1,
-                "CreatedAt": "2020-08-04T14:13:13Z",
-                "UpdatedAt": "2020-08-04T14:13:13Z",
-                "DeletedAt": null,
-                "EventName": "Heapcon Belgrade",
-                "StartDate": "2020-08-04T14:13:13Z",
-                "EndDate": "2020-08-04T14:13:13Z"
-            }
-        ]
-    },
-    {
-        "ID": 2,
-        "CreatedAt": "2020-08-04T14:13:13Z",
-        "UpdatedAt": "2020-08-04T14:13:13Z",
-        "DeletedAt": null,
-        "LocationName": "Smederevo",
-        "Events": []
-    }
-]
-```
-
-#### GET ONE LOCATION AND ALL EVENTS
-```
-{
-    "ID": 1,
-    "CreatedAt": "2020-08-04T14:13:13Z",
-    "UpdatedAt": "2020-08-04T14:13:13Z",
-    "DeletedAt": null,
-    "LocationName": "Beograd",
-    "Events": [
-        {
-            "ID": 1,
-            "CreatedAt": "2020-08-04T14:13:13Z",
-            "UpdatedAt": "2020-08-04T14:13:13Z",
-            "DeletedAt": null,
-            "EventName": "Heapcon Belgrade",
-            "StartDate": "2020-08-04T14:13:13Z",
-            "EndDate": "2020-08-04T14:13:13Z"
-        }
-    ]
-}
-```
-
-#### GET ALL PERSONS
-```
-[
-    {
-        "ID": 1,
-        "CreatedAt": "2020-08-04T14:13:13Z",
-        "UpdatedAt": "2020-08-04T14:13:13Z",
-        "DeletedAt": null,
-        "PersonName": "Goran Grujic",
-        "OrganizationId": 1,
-        "TalkId": 1
-    }
-]
-
-```
-#### GET TOPICS PER PERSON
-```
-[
-    {
-        "ID": 1,
-        "CreatedAt": "2020-08-04T14:13:14Z",
-        "UpdatedAt": "2020-08-04T14:13:14Z",
-        "DeletedAt": null,
-        "TitleName": "CKAD - Kubernetes Development",
-        "StartDate": "2020-08-04T14:13:14Z",
-        "EndDate": "2020-08-04T14:13:14Z",
-        "LanguageId": 1,
-        "People": [
-            {
-                "ID": 1,
-                "CreatedAt": "2020-08-04T14:13:13Z",
-                "UpdatedAt": "2020-08-04T14:13:13Z",
-                "DeletedAt": null,
-                "PersonName": "Goran Grujic",
-                "OrganizationId": 1,
-                "TalkId": 1
-            }
-        ],
-        "Level": "Beginner",
-        "Topics": null
-    }
-]
-```
-#### GET TOPICS AND TALKS AND PERSONS
-```
-[
-    {
-        "ID": 1,
-        "CreatedAt": "2020-08-04T14:13:14Z",
-        "UpdatedAt": "2020-08-04T14:13:14Z",
-        "DeletedAt": null,
-        "TitleName": "CKAD - Kubernetes Development",
-        "StartDate": "2020-08-04T14:13:14Z",
-        "EndDate": "2020-08-04T14:13:14Z",
-        "LanguageId": 1,
-        "People": [
-            {
-                "ID": 1,
-                "CreatedAt": "2020-08-04T14:13:13Z",
-                "UpdatedAt": "2020-08-04T14:13:13Z",
-                "DeletedAt": null,
-                "PersonName": "Goran Grujic",
-                "OrganizationId": 1,
-                "TalkId": 1
-            }
-        ],
-        "Level": "Beginner",
-        "Topics": [
-            {
-                "ID": 1,
-                "CreatedAt": "2020-08-04T14:13:14Z",
-                "UpdatedAt": "2020-08-04T14:13:14Z",
-                "DeletedAt": null,
-                "TopicName": "Kubernetes",
-                "TalkId": 1,
-                "Children": null,
-                "Parents": null
-            },
-            {
-                "ID": 2,
-                "CreatedAt": "2020-08-04T14:13:14Z",
-                "UpdatedAt": "2020-08-04T14:13:14Z",
-                "DeletedAt": null,
-                "TopicName": "Exam",
-                "TalkId": 1,
-                "Children": null,
-                "Parents": null
-            }
-        ]
-    },
-    {
-        "ID": 2,
-        "CreatedAt": "2020-08-04T14:13:14Z",
-        "UpdatedAt": "2020-08-04T14:13:14Z",
-        "DeletedAt": null,
-        "TitleName": "Weed - Rolling papers",
-        "StartDate": "2020-08-04T14:13:14Z",
-        "EndDate": "2020-08-04T14:13:14Z",
-        "LanguageId": 1,
-        "People": [],
-        "Level": "Architect",
-        "Topics": [
-            {
-                "ID": 3,
-                "CreatedAt": "2020-08-04T14:13:14Z",
-                "UpdatedAt": "2020-08-04T14:13:14Z",
-                "DeletedAt": null,
-                "TopicName": "Rolling Pappers",
-                "TalkId": 2,
-                "Children": null,
-                "Parents": null
-            },
-            {
-                "ID": 4,
-                "CreatedAt": "2020-08-04T14:13:14Z",
-                "UpdatedAt": "2020-08-04T14:13:14Z",
-                "DeletedAt": null,
-                "TopicName": "Weed",
-                "TalkId": 2,
-                "Children": null,
-                "Parents": null
-            }
-        ]
     }
 ]
 ```
