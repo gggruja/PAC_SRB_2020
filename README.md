@@ -4,44 +4,49 @@ This is a public repository, for PAC 2019 Task 1.1
 
 How to run it:
 
-0. If you have minikube you can delete it first:
+* If you have minikube you can delete it first:
 
-minikube delete
+        minikube delete
 
-rm -rf .minikube 
+        rm -rf .minikube 
    
-1. install minikube 
+* Install minikube: 
 
-brew install minikube
+        brew install minikube
 
-2. Set up your minikube
+* Set up your minikube as below:
 
-minikube config view              
-- vm-driver: hyperkit
-- cpus: 4
-- disk-size: 100g
-- memory: 8000
+        minikube config view              
+        - vm-driver: hyperkit
+        - cpus: 4
+        - disk-size: 100g
+        - memory: 8000
 
-3. Start your minikube
+* Start your minikube
 
-minikube start 
+        minikube start 
 
-4. Add on ingress
+* Add on ingress:
 
-minikube addons enable ingres
+        minikube addons enable ingres
         
-5. add in hosts file: 
+* Add in hosts file: 
 
-minikube_ip	conference
+        <minikube ip>	conference conference.backend conference.keycloak conference.grafana conference.prometheus
 
-minikube_ip	conference.keycloak
+* Add eval for images
 
-minikube_ip	conference.grafana
+         eval $(minikube docker-env) 
 
-minikube_ip	conference.prometheus
+* Go to PATH ../frontend and ../backend run image creation:
 
-6. Go to ../PAC_SRB_2020/infrastructure/terraform running `install.sh` script
+        docker build -f Dockerfile -t backend .
+        docker build -f Dockerfile -t frontend .
 
-./install
+* Go to PATH ../PAC_SRB_2020/infrastructure/terraform run `install.sh` script:
 
-7. Go to http://conference/ 
+        ./install
+
+* Open URL in browser: 
+
+        http://conference/ 
