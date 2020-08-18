@@ -13,3 +13,6 @@ ingress:
     - host: conference
       paths:
         - "/api"
+    - host: conference.backend
+      paths:
+        - "/"
