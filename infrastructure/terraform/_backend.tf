@@ -41,7 +41,7 @@ resource "kubernetes_config_map" "backend-config" {
   }
 }
 
-resource "kubernetes_cron_job" "backend-init-db" {
+resource "kubernetes_job" "backend-init-db" {
   metadata {
     name = "backend-init-db"
     namespace = kubernetes_namespace.backend.metadata[0].name
@@ -51,36 +51,21 @@ resource "kubernetes_cron_job" "backend-init-db" {
     helm_release.backend
   ]
 
-
   spec {
-    concurrency_policy            = "Replace"
-    failed_jobs_history_limit     = 1
-    schedule                      = "*/1 * * * *"
-    starting_deadline_seconds     = 10
-    successful_jobs_history_limit = 1
-    suspend                       = false
-    job_template {
-      metadata {
-      }
+    template {
+      metadata {}
       spec {
-        backoff_limit = 2
-        ttl_seconds_after_finished    = 10
-        template {
-          metadata {}
-          spec {
-            container {
-              name    = "backend-init-db"
-              image   = "busybox"
-              command = ["/bin/sh", "-c", "wget backend/init"]
-            }
-            restart_policy = "Never"
-          }
+        container {
+          name    = "backend-init-db"
+          image   = "busybox"
+          command = ["/bin/sh", "-c", "wget backend/init"]
         }
+        restart_policy = "Never"
       }
     }
+    backoff_limit = 4
   }
 }
-
 
 resource "random_password" "backend-mariadb-password" {
   length = 16
