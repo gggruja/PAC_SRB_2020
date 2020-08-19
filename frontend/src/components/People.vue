@@ -14,6 +14,25 @@
             </tr>
             </tbody>
         </table>
+
+        <div v-show="talks.length > 0">
+            <table class="table table-striped" style="width:100%">
+                <thead>
+                <tr>
+                    <th>Talk Title</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                </tr>
+                </thead>
+                <tbody v-for="talk in talks" :key="talk.ID">
+                <tr>
+                    <td>{{talk.TitleName}}</td>
+                    <td>{{talk.StartDate}}</td>
+                    <td>{{talk.EndDate}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </template>
 
