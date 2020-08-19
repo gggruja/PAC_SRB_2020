@@ -8,14 +8,15 @@
             </thead>
             <tbody v-for="person in persons" :key="person.ID">
             <tr>
-                <td class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"
-                    @click="getAllTalksForOnePerson(person.ID)">{{person.PersonName}}
+                <td class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent pointer"
+                    @click="getAllTalksForOnePerson(person.ID, person.PersonName)">{{person.PersonName}}
                 </td>
             </tr>
             </tbody>
         </table>
 
         <div v-show="talks.length > 0">
+            <h1>Talks of: {{name}}</h1>
             <table class="table table-striped" style="width:100%">
                 <thead>
                 <tr>
@@ -43,7 +44,8 @@
         data() {
             return {
                 persons: [],
-                talks: []
+                talks: [],
+                name: null
             };
         },
         methods: {
@@ -52,10 +54,11 @@
                     .then(response => response.json())
                     .then(data => (this.persons = data));
             },
-            getAllTalksForOnePerson(id) {
+            getAllTalksForOnePerson(id, name) {
                 fetch(window.location.origin + "/api/persons/" + id + "/talks")
                     .then(response => response.json())
                     .then(data => (this.talks = data));
+                this.name = name;
             }
         },
         beforeMount(){
@@ -63,3 +66,9 @@
         }
     };
 </script>
+
+<style>
+    .pointer {
+        cursor: pointer;
+    }
+</style>
