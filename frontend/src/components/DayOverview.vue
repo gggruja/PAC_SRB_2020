@@ -1,6 +1,7 @@
 <template>
     <div>
-        <select class="mdb-select md-form colorful-select dropdown-primary" required id="dropDown">
+        Choose Event:
+        <select class="selectpicker" data-size="5" required id="dropDown">
             <option>Select here</option>
             <option v-for="event in events" :key="event.ID">{{ event.EventName }}
             </option>
