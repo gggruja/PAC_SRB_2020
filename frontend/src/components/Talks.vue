@@ -15,9 +15,9 @@
             <tr>
                 <td>{{talk.TitleName}}</td>
                 <td>{{talk.Level}}</td>
-                <td>TODO LANGUAGE</td>
-                <td>TODO PEOPLE</td>
-                <td>TODO TOPICS</td>
+                <td>{{talk.LanguageId}}</td>
+                <td v-for="person in talk.People" :key="person">{{person.PersonName}}</td>
+                <td v-for="topic in talk.Topics" :key="topic">{{topic.TopicName}}</td>
                 <td>TODO EVENTS</td>
             </tr>
             </tbody>
@@ -31,7 +31,9 @@
         name: "Talks",
         data() {
             return {
-                talks: []
+                talks: [],
+                peopleName: null,
+                language: null
             };
         },
         methods: {
@@ -39,6 +41,11 @@
                 fetch(window.location.origin + "/api/talks")
                     .then(response => response.json())
                     .then(data => (this.talks = data));
+            },
+            getLanguage(id) {
+                fetch(window.location.origin + "/api/language/" + id)
+                    .then(response => response.json())
+                    .then(data => (this.language = data));
             }
         },
         beforeMount(){

@@ -123,6 +123,7 @@ func main() {
 	sm.HandleFunc("/api/events/select-box", getEvents).Methods("GET")
 	sm.HandleFunc("/api/locations/{locationId:[0-9]+}/rooms", getAllRoomsAtLocation).Methods("GET")
 	sm.HandleFunc("/api/rooms/{roomId:[0-9]+}/talks", getAllTalksInARoom).Methods("GET")
+	sm.HandleFunc("/api/languages/{languageId:[0-9]+}", getLanguage).Methods("GET")
 
 	// create Server
 	s := http.Server{
@@ -889,4 +890,18 @@ func getAllRoomsAtLocation(w http.ResponseWriter, r *http.Request) {
 	db.Where("rooms.location_id = ?", id).Find(&rooms)
 	json.NewEncoder(w).Encode(rooms)
 
+}
+
+
+func getLanguage(w http.ResponseWriter, r *http.Request) {
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "*")
+
+	params := mux.Vars(r)
+	inputLanguageId := params["languageId"]
+
+	var language Language
+	db.First(&language, inputLanguageId)
+	json.NewEncoder(w).Encode(language)
 }
