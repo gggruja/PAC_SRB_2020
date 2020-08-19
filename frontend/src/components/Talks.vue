@@ -53,7 +53,7 @@
                     .then(data => (this.talks = data));
             },
             getLanguage(id) {
-                fetch(window.location.origin + "/api/language/" + id)
+                fetch(window.location.origin + "/api/languages/" + id)
                     .then(response => response.json())
                     .then(data => (this.language = data));
             }
