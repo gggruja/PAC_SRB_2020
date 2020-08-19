@@ -16,8 +16,18 @@
                 <td>{{talk.TitleName}}</td>
                 <td>{{talk.Level}}</td>
                 <td>{{talk.LanguageId}}</td>
-                <td v-for="person in talk.People" :key="person">{{person.PersonName}}</td>
-                <td v-for="topic in talk.Topics" :key="topic">{{topic.TopicName}}</td>
+                <td>
+                    <span v-for="(person, index) in talk.People" v-bind:key="person">
+                        <span>{{person.PersonName}}</span>
+                        <span v-if="index+1 < talk.People.length">, </span>
+                    </span>
+                </td>
+                <td>
+                    <span v-for="(topic, index) in talk.Topics" v-bind:key="topic">
+                        <span>{{topic.TopicName}}</span>
+                        <span v-if="index+1 < talk.Topics.length">, </span>
+                    </span>
+                </td>
                 <td>TODO EVENTS</td>
             </tr>
             </tbody>
@@ -48,7 +58,7 @@
                     .then(data => (this.language = data));
             }
         },
-        beforeMount(){
+        beforeMount() {
             this.getTalks()
         }
     };
