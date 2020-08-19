@@ -1,7 +1,6 @@
 <template>
     <div>
-        <button v-on:click="getEvents">Get Events</button>
-        <table style="width:100%">
+        <table class="table table-striped" style="width:100%">
             <thead>
             <tr>
                 <th>Event Name</th>
@@ -43,6 +42,9 @@
                     .then(response => response.json())
                     .then(data => (this.events = data));
             }
+        },
+        beforeMount(){
+            this.getEvents()
         }
     };
 </script>
