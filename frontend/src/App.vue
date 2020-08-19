@@ -43,4 +43,11 @@
         font-weight: bold;
         margin-right: 15px;
     }
+
+    .footer-copyright{
+        position:absolute;
+        bottom:0;
+        width:100%;
+        height:60px;
+    }
 </style>
