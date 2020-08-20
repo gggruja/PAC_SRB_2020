@@ -123,7 +123,6 @@ func main() {
 	sm.HandleFunc("/api/events/select-box", getEvents).Methods("GET")
 	sm.HandleFunc("/api/locations/{locationId:[0-9]+}/rooms", getAllRoomsAtLocation).Methods("GET")
 	sm.HandleFunc("/api/rooms/{roomId:[0-9]+}/talks", getAllTalksInARoom).Methods("GET")
-	sm.HandleFunc("/api/languages/{languageId:[0-9]+}", getLanguage).Methods("GET")
 
 	// create Server
 	s := http.Server{
@@ -299,6 +298,9 @@ type Talk struct {
 	Level      string    `json:"Level"`
 	Topics     []Topic   `json:"Topics" gorm:"foreignkey:TalkId"`
 	RoomId     uint      `json:"RoomId"`
+	Language   Language  `json:"Language" gorm:"foreignkey:LanguageId"`
+
+
 }
 
 type Topic struct {
@@ -501,7 +503,7 @@ func getTalks(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	var talks []Talk
-	db.Preload("People").Preload("Topics").Find(&talks)
+	db.Preload("People").Preload("Topics").Preload("Language").Find(&talks)
 	json.NewEncoder(w).Encode(talks)
 
 }
@@ -845,16 +847,6 @@ func getEventsForOneTalk(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(events)
 }
 
-type RoomDayOverviewResult struct {
-	RoomId       uint
-	RoomName     string
-	StartDate    time.Time
-	EndDate      time.Time
-	LocationName string
-	TitleName    string
-	TopicName    string
-}
-
 func getAllTalksInARoom(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
@@ -887,21 +879,8 @@ func getAllRoomsAtLocation(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	var rooms []Room
-	db.Where("rooms.location_id = ?", id).Find(&rooms)
+	db.Where("rooms.location_id = ?", id).Preload("Talk").Find(&rooms)
 	json.NewEncoder(w).Encode(rooms)
 
 }
 
-
-func getLanguage(w http.ResponseWriter, r *http.Request) {
-
-	w.Header().Set("Content-Type", "application/json")
-	w.Header().Set("Access-Control-Allow-Origin", "*")
-
-	params := mux.Vars(r)
-	inputLanguageId := params["languageId"]
-
-	var language Language
-	db.First(&language, inputLanguageId)
-	json.NewEncoder(w).Encode(language)
-}

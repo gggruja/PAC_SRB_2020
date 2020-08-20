@@ -15,7 +15,7 @@
             <tr>
                 <td>{{talk.TitleName}}</td>
                 <td>{{talk.Level}}</td>
-                <td>{{talk.LanguageId}}</td>
+                <td>{{talk.Language.LanguageName}}</td>
                 <td>
                     <span v-for="(person, index) in talk.People" v-bind:key="person">
                         <span>{{person.PersonName}}</span>
@@ -42,8 +42,7 @@
         data() {
             return {
                 talks: [],
-                peopleName: null,
-                language: null
+                peopleName: null
             };
         },
         methods: {
@@ -51,11 +50,6 @@
                 fetch(window.location.origin + "/api/talks")
                     .then(response => response.json())
                     .then(data => (this.talks = data));
-            },
-            getLanguage(id) {
-                fetch(window.location.origin + "/api/languages/" + id)
-                    .then(response => response.json())
-                    .then(data => (this.language = data));
             }
         },
         beforeMount() {
