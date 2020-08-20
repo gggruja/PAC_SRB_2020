@@ -28,7 +28,12 @@
                         <span v-if="index+1 < talk.Topics.length">, </span>
                     </span>
                 </td>
-                <td>TODO EVENTS</td>
+                <td>
+                    <span v-for="(event, index) in talk.Room.Location.Events" v-bind:key="event">
+                        <span>{{event.EventName}}</span>
+                        <span v-if="index+1 < talk.Room.Location.Events.length">, </span>
+                    </span>
+                </td>
             </tr>
             </tbody>
         </table>

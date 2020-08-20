@@ -119,7 +119,6 @@ func main() {
 	sm.HandleFunc("/api/persons", getPersons).Methods("GET")
 	sm.HandleFunc("/api/persons/{personId:[0-9]+}/talks", getAllTalksForOnePerson).Methods("GET")
 	sm.HandleFunc("/api/talks", getTalks).Methods("GET")
-	sm.HandleFunc("/api/talks/{talkId:[0-9]+}/events", getEventsForOneTalk).Methods("GET")
 	sm.HandleFunc("/api/events/select-box", getEvents).Methods("GET")
 	sm.HandleFunc("/api/locations/{locationId:[0-9]+}/rooms", getAllRoomsAtLocation).Methods("GET")
 	sm.HandleFunc("/api/rooms/{roomId:[0-9]+}/talks", getAllTalksInARoom).Methods("GET")
@@ -257,9 +256,9 @@ type Location struct {
 
 type Room struct {
 	gorm.Model
-	RoomName   string `json:"RoomName"`
-	Talk       Talk   `gorm:"foreignkey:TalkId"`
-	LocationId uint   `json:"LocationId"`
+	RoomName   string   `json:"RoomName"`
+	LocationId uint     `json:"LocationId"`
+	Location   Location `json:"Location" gorm:"foreignkey:LocationId"`
 }
 
 type Event struct {
@@ -299,8 +298,7 @@ type Talk struct {
 	Topics     []Topic   `json:"Topics" gorm:"foreignkey:TalkId"`
 	RoomId     uint      `json:"RoomId"`
 	Language   Language  `json:"Language" gorm:"foreignkey:LanguageId"`
-
-
+	Room       Room      `json:"Room" gorm:"foreignkey:RoomId"`
 }
 
 type Topic struct {
@@ -503,7 +501,8 @@ func getTalks(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
 	var talks []Talk
-	db.Preload("People").Preload("Topics").Preload("Language").Find(&talks)
+	db.Preload("People").Preload("Topics").Preload("Language").Preload("Room").
+		Preload("Room.Location").Preload("Room.Location.Events").Find(&talks)
 	json.NewEncoder(w).Encode(talks)
 
 }
@@ -883,4 +882,3 @@ func getAllRoomsAtLocation(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(rooms)
 
 }
-
