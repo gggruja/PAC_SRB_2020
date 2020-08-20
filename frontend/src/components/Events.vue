@@ -15,12 +15,12 @@
             <tbody v-for="event in events" :key="event.ID">
             <tr>
                 <td>{{event.EventName}}</td>
-                <td>{{event.StartDate}}</td>
-                <td>{{event.EndDate}}</td>
+                <td>{{ event.StartDate | dateParse('YYYY.MM.DD HH:mm:ss') | dateFormat('DD.MM.YYYY') }}</td>
+                <td>{{ event.EndDate | dateParse('YYYY.MM.DD HH:mm:ss') | dateFormat('DD.MM.YYYY') }}</td>
                 <td>{{event.LocationName}}</td>
                 <td>{{event.RoomName}}</td>
                 <td>{{event.TitleName}}</td>
-                <td>{{event.TopicName}}</td>
+                <td style="font-weight:bold">{{event.TopicName}}</td>
             </tr>
             </tbody>
         </table>

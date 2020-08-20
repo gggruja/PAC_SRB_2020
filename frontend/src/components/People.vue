@@ -27,9 +27,9 @@
                 </thead>
                 <tbody v-for="talk in talks" :key="talk.ID">
                 <tr>
-                    <td>{{talk.TitleName}}</td>
-                    <td>{{talk.StartDate}}</td>
-                    <td>{{talk.EndDate}}</td>
+                    <td style="font-weight:bold">{{talk.TitleName}}</td>
+                    <td>{{ talk.StartDate | dateParse('YYYY.MM.DD HH:mm:ss') | dateFormat('DD.MM.YYYY HH:mm') }}</td>
+                    <td>{{ talk.EndDate | dateParse('YYYY.MM.DD HH:mm:ss') | dateFormat('DD.MM.YYYY HH:mm') }}</td>
                 </tr>
                 </tbody>
             </table>
