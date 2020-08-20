@@ -1,9 +1,9 @@
 <template>
     <div>
         Choose Event:
-        <select class="selectpicker" data-size="5" required id="dropDown">
+        <select class="selectpicker" @change="onChange($event)"  data-size="5" required id="dropDown">
             <option>Select here</option>
-            <option v-for="event in events" :key="event.ID">{{ event.EventName }}
+            <option v-for="event in events" :key="event.ID" v-bind:value="event.ID">{{ event.EventName }}
             </option>
         </select>
         <table class="table table-striped" style="width:100%">
@@ -36,6 +36,9 @@
                 fetch(window.location.origin + "/api/events/select-box")
                     .then(response => response.json())
                     .then(data => (this.events = data));
+            },
+            onChange(event) {
+                console.log(event.target.value);
             }
         },
         beforeMount(){
