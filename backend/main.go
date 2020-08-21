@@ -865,6 +865,7 @@ func getAllTalksInARoom(w http.ResponseWriter, r *http.Request) {
 	db.Where("talks.room_id = ?", id).Preload("People").Preload("Topics").Find(&talks)
 	json.NewEncoder(w).Encode(talks)
 }
+
 func getAllRoomsAtLocation(w http.ResponseWriter, r *http.Request) {
 
 	vars := mux.Vars(r)
@@ -877,8 +878,15 @@ func getAllRoomsAtLocation(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
-	var rooms []Room
-	db.Where("rooms.location_id = ?", id).Preload("Talk").Find(&rooms)
-	json.NewEncoder(w).Encode(rooms)
+	var talks []Talk
+	db.Preload("People").
+		Preload("Topics").
+		Preload("Language").
+		Preload("Room").
+		Preload("Room.Location").
+		Where("id IN (?)", db.Table("locations").Select("id").Where("id = ?", id).SubQuery()).
+		Preload("Room.Location.Events").
+		Find(&talks)
+	json.NewEncoder(w).Encode(talks)
 
 }
