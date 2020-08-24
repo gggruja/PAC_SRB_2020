@@ -5,10 +5,12 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gggruja/PAC_SRB_2020/backend/config"
+	"github.com/gggruja/PAC_SRB_2020/backend/monitoring"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/gorilla/mux"
 	"github.com/hashicorp/go-hclog"
 	"github.com/jinzhu/gorm"
+	"github.com/justinas/alice"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"log"
 	"net/http"
@@ -59,6 +61,8 @@ func main() {
 	defer db.Close()
 
 	sm := mux.NewRouter()
+
+	monPrometheus := alice.New(monitoring.Prometheus)
 
 	sm.HandleFunc("/", healthChecking)
 	sm.Handle("/metrics", promhttp.Handler())
@@ -115,13 +119,13 @@ func main() {
 	sm.HandleFunc("/talks/{talkId:[0-9]+}", deleteTalk).Methods("DELETE")
 
 	// VIEW API's
-	sm.HandleFunc("/api/events", getListOfAllEvents).Methods("GET")
-	sm.HandleFunc("/api/persons", getPersons).Methods("GET")
-	sm.HandleFunc("/api/persons/{personId:[0-9]+}/talks", getAllTalksForOnePerson).Methods("GET")
-	sm.HandleFunc("/api/talks", getTalks).Methods("GET")
-	sm.HandleFunc("/api/events/select-box", getEvents).Methods("GET")
-	sm.HandleFunc("/api/locations/{locationId:[0-9]+}/rooms", getAllRoomsAtLocation).Methods("GET")
-	sm.HandleFunc("/api/rooms/{roomId:[0-9]+}/talks", getAllTalksInARoom).Methods("GET")
+	sm.Handle("/api/events", monPrometheus.Then(http.HandlerFunc(getListOfAllEvents))).Methods("GET")
+	sm.Handle("/api/persons", monPrometheus.Then(http.HandlerFunc(getPersons))).Methods("GET")
+	sm.Handle("/api/persons/{personId:[0-9]+}/talks", monPrometheus.Then(http.HandlerFunc(getAllTalksForOnePerson))).Methods("GET")
+	sm.Handle("/api/talks", monPrometheus.Then(http.HandlerFunc(getTalks))).Methods("GET")
+	sm.Handle("/api/events/select-box", monPrometheus.Then(http.HandlerFunc(getEvents))).Methods("GET")
+	sm.Handle("/api/locations/{locationId:[0-9]+}/rooms", monPrometheus.Then(http.HandlerFunc(getAllRoomsAtLocation))).Methods("GET")
+	sm.Handle("/api/rooms/{roomId:[0-9]+}/talks", monPrometheus.Then(http.HandlerFunc(getAllTalksInARoom))).Methods("GET")
 
 	// create Server
 	s := http.Server{
