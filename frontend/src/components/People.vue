@@ -15,7 +15,8 @@
                     <button v-on:click="getAllTalksForOnePerson(person.ID, person.PersonName)" type="button" class="btn btn-info">See Talks</button>
                 </td>
                 <td>
-                    <button type="button" class="btn btn-primary">Edit Person</button>
+                    <button type="button" class="btn btn-primary" @click="showModal(person)">Edit Person</button>
+                    <example-modal ref="modal"></example-modal>
                 </td>
             </tr>
             </tbody>
@@ -41,6 +42,7 @@
             </table>
         </div>
     </div>
+
 </template>
 
 
@@ -65,6 +67,9 @@
                     .then(response => response.json())
                     .then(data => (this.talks = data));
                 this.name = name;
+            },
+            showModal(person) {
+                console.log(person)
             }
         },
         beforeMount(){

@@ -1,13 +1,12 @@
 <template>
     <div id="app">
         <h1>Conference APP</h1>
-        <nav >
+        <nav>
             <router-link to="/">Events</router-link>
             <router-link to="/day-overview">Day overview</router-link>
             <router-link to="/people">People</router-link>
             <router-link to="/talks">Talks</router-link>
         </nav>
-
         <router-view/>
     </div>
 </template>

@@ -1,13 +1,14 @@
 import Vue from 'vue'
-import Router from 'vue-router'
+import VueRouter from 'vue-router'
 import Events from './components/Events'
 import People from "./components/People";
 import Talks from "./components/Talks";
 import DayOverview from "./components/DayOverview";
 
-Vue.use(Router)
+Vue.use(VueRouter)
 
-export default new Router({
+export default new VueRouter({
+    mode: 'history',
     routes: [
         {
             path: "/",
