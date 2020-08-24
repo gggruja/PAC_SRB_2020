@@ -6,7 +6,7 @@
             <option v-for="event in events" :key="event.ID" v-bind:value="event.ID">{{ event.EventName }}
             </option>
         </select>
-        <table v-show="rooms.length > 0" class="table table-striped" style="width:100%">
+        <table v-show="rooms.length > 0" class="table table-striped margin-top-25" style="width:100%">
             <thead>
             <tr>
                 <th>Time \ Room Name</th>
@@ -74,3 +74,9 @@
         }
     };
 </script>
+
+<style>
+    .margin-top-25 {
+        margin-top: 25px;
+    }
+</style>
