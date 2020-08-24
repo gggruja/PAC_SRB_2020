@@ -1,4 +1,4 @@
-package prometheus
+package monitoring
 
 import (
 	"github.com/gorilla/mux"
