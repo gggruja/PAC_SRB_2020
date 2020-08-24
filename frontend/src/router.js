@@ -8,7 +8,6 @@ import DayOverview from "./components/DayOverview";
 Vue.use(VueRouter)
 
 export default new VueRouter({
-    mode: 'history',
     routes: [
         {
             path: "/",
