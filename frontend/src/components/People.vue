@@ -4,12 +4,18 @@
             <thead>
             <tr>
                 <th>Person Name</th>
+                <th>See Talks</th>
+                <th>Edit Person</th>
             </tr>
             </thead>
             <tbody v-for="person in persons" :key="person.ID">
             <tr>
-                <td class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent pointer"
-                    @click="getAllTalksForOnePerson(person.ID, person.PersonName)">{{person.PersonName}}
+                <td >{{person.PersonName}}</td>
+                <td>
+                    <button v-on:click="getAllTalksForOnePerson(person.ID, person.PersonName)" type="button" class="btn btn-info">See Talks</button>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-primary">Edit Person</button>
                 </td>
             </tr>
             </tbody>
