@@ -126,6 +126,7 @@ func main() {
 	sm.Handle("/api/events/select-box", monPrometheus.Then(http.HandlerFunc(getEvents))).Methods("GET")
 	sm.Handle("/api/locations/{locationId:[0-9]+}/rooms", monPrometheus.Then(http.HandlerFunc(getAllRoomsAtLocation))).Methods("GET")
 	sm.Handle("/api/rooms/{roomId:[0-9]+}/talks", monPrometheus.Then(http.HandlerFunc(getAllTalksInARoom))).Methods("GET")
+	sm.Handle("/api/persons/{personId:[0-9]+}",  monPrometheus.Then(http.HandlerFunc(updatePerson))).Methods("PUT")
 
 	// create Server
 	s := http.Server{

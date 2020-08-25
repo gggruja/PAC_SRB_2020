@@ -5,18 +5,27 @@
             <tr>
                 <th>Person Name</th>
                 <th>See Talks</th>
-                <th>Edit Person</th>
+                <th>Update Person</th>
             </tr>
             </thead>
             <tbody v-for="person in persons" :key="person.ID">
             <tr>
-                <td >{{person.PersonName}}</td>
-                <td>
-                    <button v-on:click="getAllTalksForOnePerson(person.ID, person.PersonName)" type="button" class="btn btn-info">See Talks</button>
+                <td v-if="editPerson === person.ID">
+                    <input v-model="person.PersonName"/>
+                </td>
+                <td v-else>
+                    {{person.PersonName}}
                 </td>
                 <td>
-                    <button type="button" class="btn btn-primary" @click="showModal(person)">Edit Person</button>
-                    <example-modal ref="modal"></example-modal>
+                    <button v-on:click="getAllTalksForOnePerson(person.ID, person.PersonName)" type="button"
+                            class="btn btn-info">See Talks
+                    </button>
+                </td>
+                <td v-if="editPerson === person.ID">
+                    <button type="button" class="btn btn-success" @click="updatePerson(person)">Save</button>
+                </td>
+                <td v-else>
+                    <button type="button" class="btn btn-primary" @click="editPerson = person.ID">Update Person</button>
                 </td>
             </tr>
             </tbody>
@@ -42,7 +51,6 @@
             </table>
         </div>
     </div>
-
 </template>
 
 
@@ -53,7 +61,8 @@
             return {
                 persons: [],
                 talks: [],
-                name: null
+                name: null,
+                editPerson: null
             };
         },
         methods: {
@@ -68,11 +77,20 @@
                     .then(data => (this.talks = data));
                 this.name = name;
             },
-            showModal(person) {
-                console.log(person)
+            updatePerson(person) {
+                fetch(window.location.origin + "/api/persons/" + person.ID, {
+                    body: JSON.stringify(person),
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                })
+                    .then(() => {
+                        this.editPerson = null;
+                    })
             }
         },
-        beforeMount(){
+        beforeMount() {
             this.getPeople()
         }
     };
