@@ -11,7 +11,9 @@
             <tbody v-for="person in persons" :key="person.ID">
             <tr>
                 <td v-if="editPerson === person.ID">
-                    <input v-on:keyup.13="updatePerson(person)" v-model="person.PersonName"/>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" v-on:keyup.13="updatePerson(person)" v-model="person.PersonName"/>
+                    </div>
                 </td>
                 <td v-else>
                     {{person.PersonName}}
