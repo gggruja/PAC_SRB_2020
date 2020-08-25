@@ -119,14 +119,14 @@ func main() {
 	sm.HandleFunc("/talks/{talkId:[0-9]+}", deleteTalk).Methods("DELETE")
 
 	// VIEW API's
-	sm.Handle("/api/events", monPrometheus.Then(http.HandlerFunc(getListOfAllEvents))).Methods("GET")
-	sm.Handle("/api/persons", monPrometheus.Then(http.HandlerFunc(getPersons))).Methods("GET")
-	sm.Handle("/api/persons/{personId:[0-9]+}/talks", monPrometheus.Then(http.HandlerFunc(getAllTalksForOnePerson))).Methods("GET")
-	sm.Handle("/api/talks", monPrometheus.Then(http.HandlerFunc(getTalks))).Methods("GET")
-	sm.Handle("/api/events/select-box", monPrometheus.Then(http.HandlerFunc(getEvents))).Methods("GET")
-	sm.Handle("/api/locations/{locationId:[0-9]+}/rooms", monPrometheus.Then(http.HandlerFunc(getAllRoomsAtLocation))).Methods("GET")
-	sm.Handle("/api/rooms/{roomId:[0-9]+}/talks", monPrometheus.Then(http.HandlerFunc(getAllTalksInARoom))).Methods("GET")
-	sm.Handle("/api/persons/{personId:[0-9]+}",  monPrometheus.Then(http.HandlerFunc(updatePerson))).Methods("PUT")
+	sm.Handle("/api/events", monPrometheus.Then(http.HandlerFunc(getListOfAllEvents))).Methods("GET").Name("GetEvents")
+	sm.Handle("/api/persons", monPrometheus.Then(http.HandlerFunc(getPersons))).Methods("GET").Name("GetPersons")
+	sm.Handle("/api/persons/{personId:[0-9]+}/talks", monPrometheus.Then(http.HandlerFunc(getAllTalksForOnePerson))).Methods("GET").Name("GetAllTalksPerPersons")
+	sm.Handle("/api/talks", monPrometheus.Then(http.HandlerFunc(getTalks))).Methods("GET").Name("GetTalks")
+	sm.Handle("/api/events/select-box", monPrometheus.Then(http.HandlerFunc(getEvents))).Methods("GET").Name("GetAllEventsToSelect")
+	sm.Handle("/api/locations/{locationId:[0-9]+}/rooms", monPrometheus.Then(http.HandlerFunc(getAllRoomsAtLocation))).Methods("GET").Name("GetAllRoomsAtLocations")
+	sm.Handle("/api/rooms/{roomId:[0-9]+}/talks", monPrometheus.Then(http.HandlerFunc(getAllTalksInARoom))).Methods("GET").Name("getAllTalksAtRoom")
+	sm.Handle("/api/persons/{personId:[0-9]+}",  monPrometheus.Then(http.HandlerFunc(updatePerson))).Methods("PUT").Name("UpdatePerson")
 
 	// create Server
 	s := http.Server{
