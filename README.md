@@ -50,3 +50,7 @@ How to run it:
 * Open URL in browser: 
 
         http://conference/ 
+ 
+* User/pass from user in keycloak: 
+
+        ggrujic/ggrujic     
