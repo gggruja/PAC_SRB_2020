@@ -4,6 +4,8 @@ This is a public repository, for PAC 2019 Task 1.1
 
 # forntend
 
+View is secured via keycloak user and that needs to be imported in keycloak (see infrastructure folder - dashboards)
+
 ## Project setup
 ```
 npm install
