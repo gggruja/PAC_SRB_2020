@@ -14,3 +14,6 @@ Note: Before you need to build two images for frontend and backend service by en
          docker build -f Dockerfile -t frontend .
 
 From directory of backend and frontend where the Dockerfile is.
+
+### Dashboard
+In a dashboard folder there is two dashboard that needed  to be imported one in keycloack for relm, clients, users, roles, etc. and one in grafana for monitoring.
