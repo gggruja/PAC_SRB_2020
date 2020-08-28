@@ -16,6 +16,8 @@ How to run it:
 
 * Set up your minikube as below:
 
+        command: minikube config set XXXXX
+        
         minikube config view              
         - vm-driver: hyperkit
         - cpus: 4
