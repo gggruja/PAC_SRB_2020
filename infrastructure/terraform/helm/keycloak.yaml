@@ -21,4 +21,4 @@ keycloak:
     - name: realm-secret
       mountPath: "/realm/"
       readOnly: true
-  # TODO can not do the import, must do it manually for now!!! extraArgs: -Dkeycloak.import=/realm/keycloak-config.json
+  extraArgs: -Dkeycloak.import=/realm/realm-secret
