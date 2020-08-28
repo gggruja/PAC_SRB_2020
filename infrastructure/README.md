@@ -16,4 +16,8 @@ Note: Before you need to build two images for frontend and backend service by en
 From directory of backend and frontend where the Dockerfile is.
 
 ### Dashboard
-In a dashboard folder there is two dashboard that needed  to be imported one in keycloack for relm, clients, users, roles, etc. and one in grafana for monitoring.
+In a dashboard folder there is dashboard that needed to be imported - grafana for monitoring.
+
+
+### Realm folder inside infrastructure/terraform 
+In a realm folder there is realm for keycloack users.
