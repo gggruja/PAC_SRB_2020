@@ -13,3 +13,12 @@ keycloak:
     servicePort: http
     hosts:
       - conference.keycloak
+  extraVolumes: |
+    - name: realm-secret
+      secret:
+        secretName: realm-secret
+  extraVolumeMounts: |
+    - name: realm-secret
+      mountPath: "/realm/"
+      readOnly: true
+  # TODO can not to the import, must do it manually for now!!! extraArgs: -Dkeycloak.import=/realm/keycloak-config.json

@@ -82,7 +82,8 @@ resource "kubernetes_secret" "keycloak-user" {
 resource "helm_release" "keycloak" {
 
   depends_on = [
-    helm_release.keycloak-mariadb
+    helm_release.keycloak-mariadb,
+    kubernetes_secret.realm-secret
   ]
 
   name = "keycloak"
@@ -108,5 +109,16 @@ resource "helm_release" "keycloak" {
   set {
     name = "keycloak.persistence.dbHost"
     value = helm_release.keycloak-mariadb.name
+  }
+}
+
+resource "kubernetes_secret" "realm-secret" {
+  metadata {
+    name = "realm-secret"
+    namespace = kubernetes_namespace.keycloak.metadata[0].name
+  }
+
+  data = {
+    "realm-secret" = file("realm/keycloak-config.json")
   }
 }
