@@ -1,4 +1,7 @@
 grafana:
+  sidecar:
+    dashboards:
+      enabled: true
   ingress:
     enabled: true
     hosts:
