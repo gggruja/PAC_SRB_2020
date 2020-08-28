@@ -26,9 +26,9 @@ resource "kubernetes_secret" "prometheus-basic-auth" {
   }
 }
 
-resource "kubernetes_config_map" "grafana_dashboard" {
+resource "kubernetes_config_map" "grafana-dashboard" {
   metadata {
-    name = "grafana_dashboard"
+    name = "grafana-dashboard"
     namespace = kubernetes_namespace.monitoring.metadata[0].name
     labels = {
       "grafana_dashboard" : "1"
