@@ -30,7 +30,7 @@ How to run it:
 
 * Add on ingress:
 
-        minikube addons enable ingres
+        minikube addons enable ingress
         
 * Add in hosts file: 
 
